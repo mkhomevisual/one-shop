@@ -40,26 +40,31 @@
               </div>
             </div>
 
-            <ul ref="listRef"
-                class="mt-4 divide-y divide-black/5 dark:divide-white/10 overflow-auto pr-1 list-scroll"
-                :style="{ maxHeight: listMaxHeight }">
-              <li v-for="s in filtered" :key="s.id">
-                <button
-                  class="w-full text-left py-2.5 px-2 focus:outline-none group rounded-md
-                         hover:bg-black/5 dark:hover:bg-white/5"
-                  :class="active?.id === s.id ? 'bg-black/5 dark:bg-white/10 ring-1 ring-black/10 dark:ring-white/10' : ''"
-                  @click="select(s)"
-                >
-                  <p class="font-semibold text-brand-anthracite dark:text-white group-hover:underline text-[15px] leading-tight">
-                    {{ nameOf(s) }}
-                  </p>
-                  <p class="text-[13px] text-neutral-600 dark:text-neutral-300 mt-0.5 leading-snug">{{ s.address }}</p>
-                  <p v-if="hoursOf(s)" class="text-[12px] text-neutral-500 dark:text-neutral-400 mt-0.5 leading-snug">
-                    <span class="font-medium">{{ t.hoursLabel }}:</span> {{ hoursOf(s) }}
-                  </p>
-                </button>
-              </li>
-            </ul>
+            <template v-if="filtered.length">
+              <ul ref="listRef"
+                  class="mt-4 divide-y divide-black/5 dark:divide-white/10 overflow-auto pr-1 list-scroll"
+                  :style="{ maxHeight: listMaxHeight }">
+                <li v-for="s in filtered" :key="s.id">
+                  <button
+                    class="w-full text-left py-2.5 px-2 focus:outline-none group rounded-md
+                           hover:bg-black/5 dark:hover:bg-white/5"
+                    :class="active?.id === s.id ? 'bg-black/5 dark:bg-white/10 ring-1 ring-black/10 dark:ring-white/10' : ''"
+                    @click="select(s)"
+                  >
+                    <p class="font-semibold text-brand-anthracite dark:text-white group-hover:underline text-[15px] leading-tight">
+                      {{ nameOf(s) }}
+                    </p>
+                    <p class="text-[13px] text-neutral-600 dark:text-neutral-300 mt-0.5 leading-snug">{{ s.address }}</p>
+                    <p v-if="hoursOf(s)" class="text-[12px] text-neutral-500 dark:text-neutral-400 mt-0.5 leading-snug">
+                      <span class="font-medium">{{ t.hoursLabel }}:</span> {{ hoursOf(s) }}
+                    </p>
+                  </button>
+                </li>
+              </ul>
+            </template>
+            <p v-else class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+              {{ t.empty }}
+            </p>
           </div>
         </aside>
 
@@ -117,18 +122,14 @@ type Store = {
 
 const props = defineProps<{ items?: Store[]; dataUrl?: string }>()
 
-/* ---------- i18n (SSR-safe) ---------- */
-const lang = ref<Lang>('cz')
+/* ---------- i18n ---------- */
+const lang = ref<Lang>(localStorage.getItem('lang') === 'vn' ? 'vn' : 'cz')
 function onLangChange (e: any) {
-  const l = e?.detail?.lang || (typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null)
+  const l = e?.detail?.lang || localStorage.getItem('lang')
   if (l === 'cz' || l === 'vn') lang.value = l
 }
-onMounted(() => {
-  const saved = (typeof localStorage !== 'undefined') ? localStorage.getItem('lang') : null
-  if (saved === 'cz' || saved === 'vn') lang.value = saved as Lang
-  window.addEventListener('langchange', onLangChange as any)
-})
-onBeforeUnmount(() => window.removeEventListener('langchange', onLangChange as any))
+onMounted(() => window.addEventListener('langchange', onLangChange))
+onBeforeUnmount(() => window.removeEventListener('langchange', onLangChange))
 
 const dict = {
   cz: {
@@ -140,7 +141,8 @@ const dict = {
     searchLabel: 'Vyhledat pobočku',
     searchPlaceholder: 'Název nebo adresa…',
     scrollUp: 'Posunout seznam nahoru',
-    scrollDown: 'Posunout seznam dolů'
+    scrollDown: 'Posunout seznam dolů',
+    empty: 'Žádné pobočky k zobrazení.'
   },
   vn: {
     kicker: 'Chi nhánh của chúng tôi',
@@ -151,7 +153,8 @@ const dict = {
     searchLabel: 'Tìm cửa hàng',
     searchPlaceholder: 'Tên hoặc địa chỉ…',
     scrollUp: 'Cuộn lên',
-    scrollDown: 'Cuộn xuống'
+    scrollDown: 'Cuộn xuống',
+    empty: 'Chưa có chi nhánh để hiển thị.'
   }
 } as const
 const t = computed(() => dict[lang.value])
@@ -174,6 +177,7 @@ function syncListHeight() {
   const wrap = mapWrap.value
   if (!wrap) return
   const rect = wrap.getBoundingClientRect()
+  // +56px rezerva na CTA řádek pod mapou
   const h = rect.height + 56
   listMaxHeight.value = `${Math.max(320, Math.round(h))}px`
 }
@@ -194,7 +198,9 @@ onMounted(async () => {
     try {
       const res = await fetch(url, { cache: 'no-store' })
       if (!res.ok) throw new Error(String(res.status))
-      list.value = await res.json()
+      const data = await res.json()
+      // ⚙️ Podpora obou tvarů: [] i { items: [] }
+      list.value = Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : [])
     } catch (e) {
       console.error('stores.json fetch fail', e)
       list.value = []
@@ -223,7 +229,7 @@ onBeforeUnmount(() => io?.disconnect())
 /* ---------- Helpers ---------- */
 function tt(val?: Localized): string {
   if (!val) return ''
-  return typeof val === 'string' ? val : (lang.value === 'vn' ? (val as any).vn : (val as any).cz)
+  return typeof val === 'string' ? val : (lang.value === 'vn' ? val.vn : val.cz)
 }
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()

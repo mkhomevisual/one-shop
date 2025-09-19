@@ -2,6 +2,7 @@
 <template>
   <section id="novinky" :class="wrapperClasses">
     <div class="mx-auto max-w-7xl px-6 lg:px-8 py-14 sm:py-16">
+      <!-- Section header -->
       <div class="mx-auto max-w-2xl text-center">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight" :class="headingColor">
           {{ tt(heading) }}
@@ -11,18 +12,21 @@
         </p>
       </div>
 
-      <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-        <li v-for="(post, i) in limitedItems" :key="keyOf(post)" v-appear="i * 80">
-          <article :class="cardClasses + ' flex h-full flex-col'">
-            <div class="relative overflow-hidden rounded-lg">
+      <!-- Cards: stejné výšky -->
+      <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-stretch">
+        <li v-for="(post, i) in limitedItems" :key="keyOf(post)" v-appear="i * 80" class="h-full">
+          <article :class="cardClasses">
+            <!-- Image top (pevná výška přes aspect ratio) -->
+            <div class="relative overflow-hidden rounded-lg aspect-[16/9]">
               <img
                 :src="post.image"
                 :alt="tt(post.title)"
-                class="w-full h-36 sm:h-40 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </div>
 
-            <div class="pt-3 flex-1 flex flex-col">
+            <!-- Text block (vyplní zbytek karty) -->
+            <div class="pt-3 flex-1 min-h-0">
               <h3 class="text-lg sm:text-xl font-semibold leading-tight" :class="headingColor"
                   style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
                 {{ tt(post.title) }}
@@ -34,7 +38,6 @@
                  style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                 {{ tt(post.excerpt) }}
               </p>
-              <div class="mt-3"></div> <!-- spacer, ať mají karty stejnou výšku -->
             </div>
           </article>
         </li>
@@ -47,31 +50,47 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 type Localized = string | { cz: string; vn: string }
-export type NewsItem = { title: Localized; date: string | Date; excerpt: Localized; image: string; href?: string; id?: string }
+
+export type NewsItem = {
+  title: Localized
+  date: string | Date
+  excerpt: Localized
+  image: string
+  href?: string
+  id?: string
+}
 
 const props = defineProps({
   items: { type: Array as () => NewsItem[], default: () => [] },
   limit: { type: Number, default: 3 },
-  heading: { type: [String, Object] as () => Localized, default: () => ({ cz: 'Novinky', vn: 'Tin mới' }) },
-  subtitle:{ type: [String, Object] as () => Localized, default: () => ({ cz:'Zjistěte, co je u nás nového.', vn:'Cập nhật mới nhất từ chúng tôi.'})},
+  heading: {
+    type: [String, Object] as () => Localized,
+    default: () => ({ cz: 'Novinky', vn: 'Tin mới' })
+  },
+  subtitle: {
+    type: [String, Object] as () => Localized,
+    default: () => ({ cz: 'Zjistěte, co je u nás nového.', vn: 'Cập nhật mới nhất từ chúng tôi.' })
+  },
+  /** variant: 'auto' (default) sleduje <html class="dark"> z navbaru; lze i ručně "light" | "dark" */
   variant: { type: String as () => 'auto' | 'light' | 'dark', default: 'auto' },
 })
 
-/* ---------- i18n (SSR-safe) ---------- */
-const lang = ref<'cz'|'vn'>('cz')
+// Language (cz|vn)
+const lang = ref<'cz'|'vn'>(localStorage.getItem('lang') === 'vn' ? 'vn' : 'cz')
 function onLangChange (e: any) {
-  const l = e?.detail?.lang || (typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null)
+  const l = e?.detail?.lang || localStorage.getItem('lang')
   if (l === 'cz' || l === 'vn') lang.value = l
 }
-onMounted(() => {
-  const saved = (typeof localStorage !== 'undefined') ? localStorage.getItem('lang') : null
-  if (saved === 'cz' || saved === 'vn') lang.value = saved as any
-  window.addEventListener('langchange', onLangChange as any)
-})
-onBeforeUnmount(() => window.removeEventListener('langchange', onLangChange as any))
+onMounted(() => window.addEventListener('langchange', onLangChange))
+onBeforeUnmount(() => window.removeEventListener('langchange', onLangChange))
 
-function tt(val: Localized): string { return typeof val === 'string' ? val : (lang.value === 'vn' ? (val as any).vn : (val as any).cz) }
-function keyOf(post: NewsItem) { const t = tt(post.title); return post.id || `${t}-${post.date}` }
+function tt(val: Localized): string {
+  return typeof val === 'string' ? val : (lang.value === 'vn' ? val.vn : val.cz)
+}
+function keyOf(post: NewsItem) {
+  const t = tt(post.title)
+  return post.id || `${t}-${post.date}`
+}
 
 /* ---------- Fetch z /data/news.json, pokud nepřijdou props.items ---------- */
 const fetched = ref<NewsItem[]>([])
@@ -80,19 +99,29 @@ onMounted(async () => {
   try {
     const r = await fetch('/data/news.json', { cache: 'no-store' })
     const data = await r.json()
-    fetched.value = Array.isArray(data) ? data : (Array.isArray((data as any)?.items) ? (data as any).items : [])
-  } catch (e) { fetched.value = [] }
+    fetched.value = Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : [])
+  } catch (e) {
+    console.error('news.json fetch fail', e)
+    fetched.value = []
+  }
 })
 const allItems = computed<NewsItem[]>(() => (props.items.length ? props.items : fetched.value))
+
+/* ---------- Řazení podle data (desc) + limit ---------- */
 const limitedItems = computed(() => {
-  const sorted = [...allItems.value].sort((a, b) => new Date(b.date as any).getTime() - new Date(a.date as any).getTime())
+  const sorted = [...allItems.value].sort((a, b) => {
+    const da = new Date(a.date as any).getTime() || 0
+    const db = new Date(b.date as any).getTime() || 0
+    return db - da
+  })
   return sorted.slice(0, Math.max(0, props.limit))
 })
 
-/* ---------- Theme detection (SSR-safe) ---------- */
-const currentTheme = ref<'light' | 'dark'>('light')
+// Theme/dark
+const currentTheme = ref<'light' | 'dark'>(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
 let mo: MutationObserver | null = null
 function syncThemeFromDom() { currentTheme.value = document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
+
 onMounted(() => {
   if (props.variant === 'auto') {
     mo = new MutationObserver(syncThemeFromDom)
@@ -107,11 +136,17 @@ const wrapperClasses = computed(() => (isDark.value ? 'bg-neutral-900 text-white
 const headingColor = computed(() => (isDark.value ? 'text-white' : 'text-neutral-900'))
 const mutedText = computed(() => (isDark.value ? 'text-neutral-300' : 'text-neutral-600'))
 const subdued = computed(() => (isDark.value ? 'text-neutral-400' : 'text-neutral-500'))
+
 const cardClasses = computed(() =>
-  ['group rounded-xl ring-1 shadow-sm hover:shadow-md transition','px-4 py-4 sm:px-5 sm:py-5',isDark.value ? 'bg-neutral-800/60 ring-white/10' : 'bg-white ring-black/5'].join(' ')
+  [
+    'group rounded-xl ring-1 shadow-sm hover:shadow-md transition',
+    // stejné výšky: karta je flex sloupec a roztáhne se na plnou výšku <li>
+    'h-full flex flex-col',
+    'px-4 py-4 sm:px-5 sm:py-5',
+    isDark.value ? 'bg-neutral-800/60 ring-white/10' : 'bg-white ring-black/5'
+  ].join(' ')
 )
 
-/* ---------- Utils ---------- */
 function formatDate(d: string | Date): string {
   const date = typeof d === 'string' ? new Date(d) : d
   if (Number.isNaN(date.getTime())) return ''
@@ -119,7 +154,7 @@ function formatDate(d: string | Date): string {
   return date.toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
-/* ---------- VAppear ---------- */
+/* Fade-up on enter */
 const vAppear = {
   mounted(el: HTMLElement, binding: { value?: number }) {
     const delay = Number(binding?.value ?? 0)
@@ -141,5 +176,5 @@ const vAppear = {
 </script>
 
 <style scoped>
-/* Tailwind řeší vzhled */
+/* Relying on Tailwind for aesthetics and consistency */
 </style>
