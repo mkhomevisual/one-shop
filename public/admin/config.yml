@@ -1,0 +1,75 @@
+local_backend: true
+
+backend:
+  name: git-gateway        # nebo "github" / "gitlab" / "bitbucket"
+  branch: main
+
+media_folder: "public/img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+  - label: "Novinky"
+    name: "news"
+    files:
+      - label: "Novinky (JSON)"
+        name: "newsdata"
+        file: "public/data/news.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Položky"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title.cz}} — {{fields.date}}"
+            fields:
+              - { label: "ID (volitelné)", name: "id", widget: "string", required: false }
+              - label: "Nadpis"
+                name: "title"
+                widget: "object"
+                fields:
+                  - { label: "CZ", name: "cz", widget: "string" }
+                  - { label: "VN", name: "vn", widget: "string" }
+              - { label: "Datum", name: "date", widget: "datetime", time_format: false, format: "YYYY-MM-DD" }
+              - label: "Perex"
+                name: "excerpt"
+                widget: "object"
+                fields:
+                  - { label: "CZ", name: "cz", widget: "text" }
+                  - { label: "VN", name: "vn", widget: "text" }
+              - { label: "Obrázek", name: "image", widget: "image" }
+              - { label: "Odkaz (volitelné)", name: "href", widget: "string", required: false }
+
+  - label: "Pobočky"
+    name: "stores"
+    files:
+      - label: "Pobočky (JSON)"
+        name: "storesdata"
+        file: "public/data/stores.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Pobočky"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name.cz}} — {{fields.address}}"
+            fields:
+              - { label: "ID", name: "id", widget: "number", value_type: "int" }
+              - label: "Název"
+                name: "name"
+                widget: "object"
+                fields:
+                  - { label: "CZ", name: "cz", widget: "string" }
+                  - { label: "VN", name: "vn", widget: "string" }
+              - { label: "Adresa", name: "address", widget: "string" }
+              - label: "Otevírací doba"
+                name: "hours"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "CZ", name: "cz", widget: "string", required: false }
+                  - { label: "VN", name: "vn", widget: "string", required: false }
+              - { label: "Telefon", name: "phone", widget: "string", required: false }
+              - { label: "Lat", name: "lat", widget: "number", required: false }
+              - { label: "Lng", name: "lng", widget: "number", required: false }

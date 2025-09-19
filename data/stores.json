@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": { "cz": "ONESHOP Stochov", "vn": "ONESHOP Stochov" },
+    "address": "Jaroslava Šípka 188, 273 03 Stochov",
+    "hours": { "cz": "Po–So 7:00–19:30, Ne 8:00–19:30", "vn": "Thứ 2–7 7:00–19:30, CN 8:00–19:30" },
+    "phone": "",
+    "lat": null,
+    "lng": null
+  },
+  {
+    "id": 2,
+    "name": { "cz": "ONESHOP Mnichovice", "vn": "ONESHOP Mnichovice" },
+    "address": "Masarykovo nám. 729, 251 64 Mnichovice",
+    "hours": { "cz": "Po–So 8:30–18:00, Ne 12:00–17:00", "vn": "Thứ 2–7 8:30–18:00, CN 12:00–17:00" },
+    "phone": "",
+    "lat": null,
+    "lng": null
+  },
+  {
+    "id": 3,
+    "name": { "cz": "PH Diskont Tábor", "vn": "PH Diskont Tábor" },
+    "address": "Světlogorská 2767/8, 390 05 Tábor 5",
+    "hours": { "cz": "Po–Ne 8:00–19:00", "vn": "Thứ 2–CN 8:00–19:00" },
+    "phone": "",
+    "lat": null,
+    "lng": null
+  },
+  {
+    "id": 4,
+    "name": { "cz": "OD Labuť Blatná", "vn": "OD Labuť Blatná" },
+    "address": "J. P. Koubka 43, 388 01 Blatná",
+    "hours": { "cz": "Po–Ne 8:00–19:00", "vn": "Thứ 2–CN 8:00–19:00" },
+    "phone": "",
+    "lat": null,
+    "lng": null
+  }
+]

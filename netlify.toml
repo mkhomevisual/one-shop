@@ -1,0 +1,9 @@
+[build]
+  command = "npm run generate"
+  publish = ".output/public"
+
+# Nekacheovat JSON data (bezpečné pro CMS aktualizace)
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"

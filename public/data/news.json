@@ -1,0 +1,43 @@
+{
+  "items": [
+    {
+      "id": "2025-09-01-tabor",
+      "title": {
+        "cz": "Otevíráme novou prodejnu v Táboře",
+        "vn": "Khai trương cửa hàng mới tại Tábor"
+      },
+      "date": "2025-09-01",
+      "excerpt": {
+        "cz": "Rozšiřujeme dostupnost sortimentu…",
+        "vn": "Mở rộng nguồn hàng…"
+      },
+      "image": "/img/uploads/mesto-tabor.jpg",
+      "href": "/novinky/tabor"
+    },
+    {
+      "title": {
+        "cz": "Martin zprovoznil své první CMS",
+        "vn": "Martin đã chạy được CMS đầu tiên của mình."
+      },
+      "excerpt": {
+        "cz": "Je to frajer, ale stálo ho to kousek sanity. Každopádně je to v pohodě a má radost, že to funguje. Těší se, že to Duc uvidí lol.",
+        "vn": "Anh ấy ngầu thật, nhưng cũng “mất chút sanity”. Dù sao thì mọi thứ ổn cả và anh ấy rất vui vì nó hoạt động. Đang háo hức chờ Đức xem, lol."
+      },
+      "date": "2025-09-19",
+      "image": "/img/uploads/orange.jpeg"
+    },
+    {
+      "id": "",
+      "title": {
+        "cz": "Duc mi bude muset vymyslet novinky",
+        "vn": "Mẹ của bạn"
+      },
+      "date": "2025-09-19",
+      "excerpt": {
+        "cz": "Ale to si Martin bude muset ještě chvíli počkat.",
+        "vn": "Nhưng Martin sẽ phải đợi thêm một thời gian nữa."
+      },
+      "image": "/img/uploads/blueimg.jpeg"
+    }
+  ]
+}

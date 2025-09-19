@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "id": "2025-09-01-tabor",
+      "title": { "cz": "Otevíráme novou prodejnu v Táboře", "vn": "Khai trương cửa hàng mới tại Tábor" },
+      "date": "2025-09-01",
+      "excerpt": {
+        "cz": "Rozšiřujeme dostupnost sortimentu…",
+        "vn": "Mở rộng nguồn hàng…"
+      },
+      "image": "/img/uploads/news-01.jpg",
+      "href": "/novinky/tabor"
+    }
+  ]
+}

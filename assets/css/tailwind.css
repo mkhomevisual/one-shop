@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hladká animace barev při přepnutí tématu */
+@layer base {
+  /* Přechody pro celý dokument, ale jen když je na <html> tato třída */
+  .theme-switching,
+  .theme-switching * {
+    transition:
+      background-color .25s ease,
+      color .25s ease,
+      border-color .25s ease,
+      fill .25s ease,
+      stroke .25s ease,
+      box-shadow .25s ease;
+  }
+}
