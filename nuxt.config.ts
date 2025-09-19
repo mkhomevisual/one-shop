@@ -2,12 +2,20 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: false,
+
   modules: ['@nuxtjs/tailwindcss'],
+  tailwindcss: { cssPath: '~/assets/css/tailwind.css' },
+
   nitro: {
+    preset: 'static',
     prerender: {
       crawlLinks: true,
-      routes: ['/'],     // /admin neprerenderujeme (je to soubor z /public)
-      failOnError: false
-    }
-  }
+      failOnError: false, // ať prerender kvůli drobnosti nespadne
+    },
+  },
+
+  // Admin je čisté SPA z /public, nechceme ho prerenderovat
+  routeRules: {
+    '/admin/**': { prerender: false },
+  },
 })
