@@ -11,8 +11,8 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { useHead } from '#imports'
 
 /**
- * HEAD hinty pro rychlejší navázání spojení k Google Maps (iframe):
- * - dns-prefetch + preconnect zkrátí čekání na první byty.
+ * HEAD hinty pro rychlejší navázání spojení k Google Maps (iframe)
+ * + Netlify Identity widget (pro login / pozvánky do CMS).
  */
 useHead({
   link: [
@@ -20,6 +20,9 @@ useHead({
     { rel: 'preconnect', href: 'https://www.google.com', crossorigin: '' },
     { rel: 'dns-prefetch', href: 'https://maps.google.com' },
     { rel: 'preconnect', href: 'https://maps.google.com', crossorigin: '' },
+  ],
+  script: [
+    { src: 'https://identity.netlify.com/v1/netlify-identity-widget.js', defer: true }
   ]
 })
 
@@ -45,13 +48,45 @@ function onSchemeChange(e: MediaQueryListEvent) {
   if (!stored) applyDarkClass(e.matches)
 }
 
+/**
+ * Netlify Identity helper – zavolá callback až bude widget dostupný.
+ */
+function whenIdentityReady(cb: (w: any) => void) {
+  const tryNow = () => (window as any)?.netlifyIdentity
+  const w = tryNow()
+  if (w) return cb(w)
+  const t = setInterval(() => {
+    const wi = tryNow()
+    if (wi) {
+      clearInterval(t)
+      cb(wi)
+    }
+  }, 100)
+}
+
 if (process.client) {
   // Init co nejdřív na klientu
   applyDarkClass(getInitialDark())
 
   onMounted(() => {
+    // Reaguj na změnu systémového schématu (pokud není ruční volba)
     mq = window.matchMedia('(prefers-color-scheme: dark)')
     mq?.addEventListener?.('change', onSchemeChange)
+
+    // Pokud je v URL invite_token, otevři rovnou dialog pro vytvoření hesla
+    const hasInvite =
+      location.hash.includes('invite_token') || location.search.includes('invite_token')
+
+    whenIdentityReady((w) => {
+      if (hasInvite) w.open('signup') // zobraz „Nastavit heslo“
+
+      // Příjemné chování: po přihlášení přesměruj rovnou do /admin
+      w.on('init', (user: any) => {
+        if (!user) {
+          w.on('login', () => { window.location.href = '/admin/'; })
+        }
+      })
+    })
   })
 
   onBeforeUnmount(() => {
