@@ -59,6 +59,14 @@
       "phone": "",
       "lat": null,
       "lng": null
+    },
+    {
+      "id": 8,
+      "name": {
+        "cz": "PH Diskont Tábor",
+        "vn": "PH Diskont Tábor"
+      },
+      "address": "Světlogorská 2767/8, Tábor. 390 02"
     }
   ]
 }
