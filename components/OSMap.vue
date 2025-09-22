@@ -13,9 +13,9 @@
         </p>
       </div>
 
-      <!-- Obsah: LEVÝ VERTIKÁLNÍ SEZNAM + PRAVÁ MAPA -->
+      <!-- Obsah: LEVÝ SEZNAM + PRAVÁ MAPA -->
       <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Seznam (vertikální slider) -->
+        <!-- Seznam (vertikální) -->
         <aside class="lg:col-span-1 lg:sticky lg:top-8 self-start">
           <div class="rounded-2xl ring-1 ring-black/5 dark:ring-white/10 bg-white dark:bg-neutral-800/60 p-4">
             <label class="block text-sm font-medium mb-2 text-neutral-700 dark:text-neutral-200">
@@ -40,9 +40,11 @@
               </div>
             </div>
 
-            <ul ref="listRef"
-                class="mt-4 divide-y divide-black/5 dark:divide-white/10 overflow-auto pr-1 list-scroll"
-                :style="{ maxHeight: listMaxHeight }">
+            <ul
+              ref="listRef"
+              class="mt-4 divide-y divide-black/5 dark:divide-white/10 overflow-auto pr-1 list-scroll"
+              :style="{ maxHeight: listMaxHeight }"
+            >
               <li v-for="s in filtered" :key="s.id">
                 <button
                   class="w-full text-left py-2.5 px-2 focus:outline-none group rounded-md
@@ -53,7 +55,9 @@
                   <p class="font-semibold text-brand-anthracite dark:text-white group-hover:underline text-[15px] leading-tight">
                     {{ nameOf(s) }}
                   </p>
-                  <p class="text-[13px] text-neutral-600 dark:text-neutral-300 mt-0.5 leading-snug">{{ s.address }}</p>
+                  <p class="text-[13px] text-neutral-600 dark:text-neutral-300 mt-0.5 leading-snug">
+                    {{ s.address }}
+                  </p>
                   <p v-if="hoursOf(s)" class="text-[12px] text-neutral-500 dark:text-neutral-400 mt-0.5 leading-snug">
                     <span class="font-medium">{{ t.hoursLabel }}:</span> {{ hoursOf(s) }}
                   </p>
@@ -194,7 +198,11 @@ onMounted(async () => {
     try {
       const res = await fetch(url, { cache: 'no-store' })
       if (!res.ok) throw new Error(String(res.status))
-      list.value = await res.json()
+      const data = await res.json()
+      // 🔧 NORMALIZACE: podporuj pole i { items: [...] }
+      list.value = Array.isArray(data)
+        ? data
+        : (Array.isArray((data as any).items) ? (data as any).items : [])
     } catch (e) {
       console.error('stores.json fetch fail', e)
       list.value = []
@@ -225,6 +233,7 @@ function tt(val?: Localized): string {
   if (!val) return ''
   return typeof val === 'string' ? val : (lang.value === 'vn' ? (val as any).vn : (val as any).cz)
 }
+
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()
   if (!q) return list.value
@@ -233,10 +242,12 @@ const filtered = computed(() => {
     (s.address || '').toLowerCase().includes(q)
   )
 })
+
 function select(s: Store) {
   active.value = s
   if (!shouldLoad.value) shouldLoad.value = true
 }
+
 function nameOf(s?: Store) { return s ? tt(s.name) : '' }
 function hoursOf(s?: Store) { return s ? tt(s.hours) : '' }
 
