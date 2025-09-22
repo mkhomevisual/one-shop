@@ -59,6 +59,14 @@
       "phone": "",
       "lat": null,
       "lng": null
+    },
+    {
+      "id": 5,
+      "name": {
+        "cz": "OneShop Martin",
+        "vn": "OneShop Martin"
+      },
+      "address": "U Jednoty 340, Tábor, 390 05"
     }
   ]
 }
