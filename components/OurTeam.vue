@@ -42,14 +42,14 @@
           <!-- Contact (each on its own line, centered) -->
           <div class="mt-6 space-y-3">
             <a
-              :href="`tel:${p.phone.replaceAll(' ', '')}`"
+              :href="p.telHref"
               class="flex items-center justify-center gap-2 text-sm font-medium
                      text-neutral-700 dark:text-neutral-200 hover:text-brand-orange focus-visible:outline-none"
             >
               <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-brand-orange" aria-hidden="true">
                 <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V19a1 1 0 01-1 1A17 17 0 013 3a1 1 0 011-1h2.49a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.02l-2.2 2.2z"/>
               </svg>
-              <span>{{ p.phone }}</span>
+              <span>{{ p.displayPhone }}</span>
             </a>
 
             <a
@@ -73,7 +73,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 /* statické importy – jistota, že bundler soubory najde */
-import person1 from '~/assets/images/OS-Person1.png'
+import person1 from '~/assets/images/OS-Person2.png'
 import person2 from '~/assets/images/OS-Person2.png'
 import person3 from '~/assets/images/OS-Person3.png'
 import person4 from '~/assets/images/OS-Person4.png'
@@ -85,7 +85,7 @@ type RoleKey =
   | 'salesRep'
   | 'designer'
   | 'warehouseLead'
-  | 'regionalManager'   // << NOVÁ „kategorie“ role
+  | 'regionalManager'
 
 type Person = {
   name: string
@@ -132,13 +132,12 @@ const people: Person[] = [
     email: 'vit@voph.cz',
     imageUrl: person5,
   },
-  // --- NOVĚ PŘIDÁNO ---
   {
     name: 'Marcel Rathouský',
     roleKey: 'regionalManager',
     phone: '+420 000 000 000',
     email: 'marcel@voph.cz',
-    imageUrl: person5, // klidně později vyměň za vlastní fotku
+    imageUrl: person5,
   },
 ]
 
@@ -154,7 +153,7 @@ const dict = {
       salesRep: 'Obchodní zástupce',
       designer: 'Grafický design',
       warehouseLead: 'Vedoucí skladu',
-      regionalManager: 'Regionální manažer', // nové
+      regionalManager: 'Regionální manažer',
     },
   },
   vn: {
@@ -166,13 +165,26 @@ const dict = {
       salesRep: 'Nhân viên kinh doanh',
       designer: 'Thiết kế đồ họa',
       warehouseLead: 'Trưởng kho',
-      regionalManager: 'Quản lý khu vực', // mới
+      regionalManager: 'Quản lý khu vực',
     },
   },
 } as const
 
 const t = computed(() => dict[lang.value])
-const peopleView = computed(() => people.map(p => ({ ...p, role: t.value.roles[p.roleKey] })))
+
+/* zobrazení beze všech číslic (telefon i odkaz) */
+const peopleView = computed(() =>
+  people.map(p => {
+    // odstraníme číslice a vícenásobné mezery (zůstane např. jen “+” nebo prázdný text)
+    const displayPhone = p.phone.replace(/\d/g, '').replace(/\s+/g, ' ').trim()
+    return {
+      ...p,
+      role: t.value.roles[p.roleKey],
+      displayPhone,
+      telHref: '#' // žádné volání, jen vizuální odkaz
+    }
+  })
+)
 
 /* posloucháme přepínač jazyka z OSNavbaru */
 function onLangChange(e: any) {
