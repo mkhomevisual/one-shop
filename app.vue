@@ -1,8 +1,8 @@
-<!-- app.vue -->
 <template>
-  <!-- Globální wrapper pro celý web -->
-  <div v-cloak class="min-h-screen bg-white text-neutral-900 dark:bg-neutral-900 dark:text-white transition-colors">
-    <NuxtPage />
+  <div class="min-h-screen overflow-x-clip">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
@@ -22,8 +22,8 @@ useHead({
     { rel: 'preconnect', href: 'https://maps.google.com', crossorigin: '' },
   ],
   script: [
-    { src: 'https://identity.netlify.com/v1/netlify-identity-widget.js', defer: true }
-  ]
+    { src: 'https://identity.netlify.com/v1/netlify-identity-widget.js', defer: true },
+  ],
 })
 
 /**
@@ -33,7 +33,6 @@ useHead({
 function applyDarkClass(dark: boolean) {
   document.documentElement.classList.toggle('dark', dark)
 }
-
 function getInitialDark(): boolean {
   const stored = localStorage.getItem('theme')
   if (stored === 'dark') return true
@@ -43,14 +42,10 @@ function getInitialDark(): boolean {
 
 let mq: MediaQueryList | null = null
 function onSchemeChange(e: MediaQueryListEvent) {
-  // Respektuj jen pokud uživatel nemá ruční volbu uloženou
   const stored = localStorage.getItem('theme')
   if (!stored) applyDarkClass(e.matches)
 }
 
-/**
- * Netlify Identity helper – zavolá callback až bude widget dostupný.
- */
 function whenIdentityReady(cb: (w: any) => void) {
   const tryNow = () => (window as any)?.netlifyIdentity
   const w = tryNow()
@@ -65,30 +60,25 @@ function whenIdentityReady(cb: (w: any) => void) {
 }
 
 if (process.client) {
-  // Init co nejdřív na klientu
   applyDarkClass(getInitialDark())
-
   onMounted(() => {
-    // Reaguj na změnu systémového schématu (pokud není ruční volba)
     mq = window.matchMedia('(prefers-color-scheme: dark)')
     mq?.addEventListener?.('change', onSchemeChange)
 
-    // Pokud je v URL invite_token, otevři rovnou dialog pro vytvoření hesla
     const hasInvite =
       location.hash.includes('invite_token') || location.search.includes('invite_token')
 
     whenIdentityReady((w) => {
-      if (hasInvite) w.open('signup') // zobraz „Nastavit heslo“
-
-      // Příjemné chování: po přihlášení přesměruj rovnou do /admin
+      if (hasInvite) w.open('signup')
       w.on('init', (user: any) => {
         if (!user) {
-          w.on('login', () => { window.location.href = '/admin/'; })
+          w.on('login', () => {
+            window.location.href = '/admin/'
+          })
         }
       })
     })
   })
-
   onBeforeUnmount(() => {
     mq?.removeEventListener?.('change', onSchemeChange)
   })
@@ -96,6 +86,11 @@ if (process.client) {
 </script>
 
 <style>
-/* Skryje obsah do doby, než se uplatní dark/light třída → bez záblesků motivu */
+/* Globální overflow fix */
+html, body {
+  overflow-x: clip;
+}
+
+/* Skryje obsah do doby, než se uplatní dark/light třída */
 [v-cloak] { display: none; }
 </style>
