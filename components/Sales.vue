@@ -53,40 +53,70 @@ const t = {
   }
 } as const
 
-/* ----- stav a odeslání ----- */
 const sending = ref(false)
 const sent = ref<null | 'ok' | 'err'>(null)
 
-const form = reactive({
+const form = reactive<{
+  first: string
+  last: string
+  company: string
+  email: string
+  phone: string
+  message: string
+  website: string // honeypot
+}>({
   first: '',
   last: '',
   company: '',
   email: '',
   phone: '',
   message: '',
-  website: '' // honeypot (skryté pole)
+  website: ''
 })
+
+// helper: URL-encode objekt na x-www-form-urlencoded
+function encode(data: Record<string, string>) {
+  return Object.keys(data)
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k] ?? ''))
+    .join('&')
+}
 
 async function onSubmit() {
   sent.value = null
 
-  // jednoduchá validace na klientu
+  // jednoduchá validace
   if (!form.first || !form.last || !form.email || !form.message) {
     sent.value = 'err'
     return
   }
 
+  // honeypot
+  if (form.website) {
+    sent.value = 'ok'
+    return
+  }
+
   sending.value = true
   try {
-    const res = await fetch('/api/send.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+    const body = encode({
+      'form-name': 'sales',
+      first: form.first,
+      last: form.last,
+      company: form.company,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      website: form.website,
     })
-    const data = await res.json().catch(() => ({}))
-    if (res.ok && (data as any)?.ok) {
+
+    const res = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body
+    })
+
+    if (res.ok) {
       sent.value = 'ok'
-      // vyčistit
       form.first = ''
       form.last = ''
       form.company = ''
@@ -106,13 +136,20 @@ async function onSubmit() {
 </script>
 
 <template>
-  <!-- Cíl pro smooth scroll z navbaru -->
   <section id="sales" class="relative isolate bg-gray-100 px-6 py-24 sm:py-32 lg:px-8 dark:bg-gray-900">
+    <!-- SKRYTÝ skeleton pro Netlify detekci -->
+    <form name="sales" netlify netlify-honeypot="website" hidden>
+      <input type="text" name="first" />
+      <input type="text" name="last" />
+      <input type="text" name="company" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <textarea name="message"></textarea>
+      <input type="text" name="website" />
+    </form>
+
     <!-- Dekorativní blob -->
-    <div
-      class="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80"
-      aria-hidden="true"
-    >
+    <div class="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80" aria-hidden="true">
       <div
         class="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg]
                bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]
@@ -129,28 +166,28 @@ async function onSubmit() {
       <p class="mt-2 text-lg/8 text-gray-600 dark:text-gray-400">{{ t[lang].p }}</p>
     </div>
 
-    <!-- Formulář -->
-    <form class="mx-auto mt-16 max-w-xl sm:mt-20" @submit.prevent="onSubmit" novalidate>
+    <!-- Viditelný formulář řízený Vue -->
+    <form class="mx-auto mt-16 max-w-xl sm:mt-20" @submit.prevent="onSubmit" novalidate data-netlify="true">
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
         <div>
-          <label for="first-name" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <label for="first" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
             {{ t[lang].first }}
           </label>
           <div class="mt-2.5">
             <input
-              id="first-name" name="first-name" v-model="form.first" type="text" autocomplete="given-name"
+              id="first" name="first" v-model="form.first" type="text" autocomplete="given-name"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
         </div>
 
         <div>
-          <label for="last-name" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <label for="last" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
             {{ t[lang].last }}
           </label>
           <div class="mt-2.5">
             <input
-              id="last-name" name="last-name" v-model="form.last" type="text" autocomplete="family-name"
+              id="last" name="last" v-model="form.last" type="text" autocomplete="family-name"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
@@ -181,7 +218,7 @@ async function onSubmit() {
         </div>
 
         <div class="sm:col-span-2">
-          <label for="phone-number" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
+          <label for="phone" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
             {{ t[lang].phone }}
           </label>
           <div class="mt-2.5">
@@ -189,7 +226,7 @@ async function onSubmit() {
               class="flex rounded-md bg-white outline outline-1 -outline-offset-1 outline-gray-300 has-[:focus-within]:outline has-[:focus-within]:outline-2 has-[:focus-within]:-outline-offset-2 has-[:focus-within]:outline-indigo-600 dark:bg-white/5 dark:outline-white/10 dark:has-[:focus-within]:outline-indigo-500"
             >
               <input
-                id="phone-number" name="phone-number" v-model="form.phone" type="tel" inputmode="tel" autocomplete="tel"
+                id="phone" name="phone" v-model="form.phone" type="tel" inputmode="tel" autocomplete="tel"
                 class="block min-w-0 grow py-1.5 pl-3 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
               />
             </div>
@@ -208,7 +245,7 @@ async function onSubmit() {
           </div>
         </div>
 
-        <!-- Honeypot (skryté) -->
+        <!-- Honeypot -->
         <input
           type="text"
           v-model="form.website"
@@ -250,7 +287,6 @@ async function onSubmit() {
           {{ sending ? t[lang].sending : t[lang].submit }}
         </button>
 
-        <!-- Stav odeslání -->
         <p v-if="sent==='ok'" class="mt-4 text-center text-sm text-green-600 dark:text-green-400" aria-live="polite">
           {{ t[lang].ok }}
         </p>
