@@ -14,20 +14,21 @@
 
       <!-- Cards -->
       <ul class="mt-16 flex flex-wrap justify-center gap-8">
-        <li v-for="p in peopleView" :key="p.email"
-            class="w-[320px] rounded-xl bg-white dark:bg-neutral-800 px-8 py-10 text-center
-                   ring-1 ring-black/5 dark:ring-white/10 shadow-sm
-                   shadow-black/5 dark:shadow-white/5 transition-colors">
-
+        <li
+          v-for="p in peopleView"
+          :key="p.email"
+          class="w-[320px] rounded-xl bg-white dark:bg-neutral-800 px-8 py-10 text-center ring-1 ring-black/5 dark:ring-white/10 shadow-sm shadow-black/5 dark:shadow-white/5 transition-colors"
+        >
           <!-- Photo: square frame, no crop -->
-          <div class="mx-auto mb-6 h-48 w-48 aspect-square rounded-xl
-                      ring-1 ring-black/5 dark:ring-white/10
-                      bg-neutral-100 dark:bg-neutral-700/30 grid place-items-center overflow-hidden">
+          <div
+            class="mx-auto mb-6 h-48 w-48 aspect-square rounded-xl ring-1 ring-black/5 dark:ring-white/10 bg-neutral-100 dark:bg-neutral-700/30 grid place-items-center overflow-hidden"
+          >
             <img
               :src="p.imageUrl"
               :alt="p.name"
               class="max-h-full max-w-full object-contain p-1"
-              loading="lazy" decoding="async"
+              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -39,26 +40,16 @@
             {{ p.role }}
           </p>
 
-          <!-- Contact (each on its own line, centered) -->
+          <!-- Contact (email only) -->
           <div class="mt-6 space-y-3">
             <a
-              :href="`tel:${p.phone.replaceAll(' ', '')}`"
-              class="flex items-center justify-center gap-2 text-sm font-medium
-                     text-neutral-700 dark:text-neutral-200 hover:text-brand-orange focus-visible:outline-none"
-            >
-              <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-brand-orange" aria-hidden="true">
-                <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V19a1 1 0 01-1 1A17 17 0 013 3a1 1 0 011-1h2.49a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.02l-2.2 2.2z"/>
-              </svg>
-              <span>{{ p.phone }}</span>
-            </a>
-
-            <a
               :href="`mailto:${p.email}`"
-              class="flex items-center justify-center gap-2 text-sm font-medium
-                     text-neutral-700 dark:text-neutral-200 hover:text-brand-orange focus-visible:outline-none"
+              class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 hover:text-brand-orange focus-visible:outline-none"
             >
               <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-brand-orange" aria-hidden="true">
-                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8.24l7.4 5.92a1 1 0 001.2 0L20 8.24V18H4z"/>
+                <path
+                  d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8.24l7.4 5.92a1 1 0 001.2 0L20 8.24V18H4z"
+                />
               </svg>
               <span>{{ p.email }}</span>
             </a>
@@ -73,7 +64,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 /* statické importy – jistota, že bundler soubory najde */
-import person1 from '~/assets/images/OS-Person1.png'
+import person1 from '~/assets/images/OS-Person2.png'
 import person2 from '~/assets/images/OS-Person2.png'
 import person3 from '~/assets/images/OS-Person3.png'
 import person4 from '~/assets/images/OS-Person4.png'
@@ -85,12 +76,11 @@ type RoleKey =
   | 'salesRep'
   | 'designer'
   | 'warehouseLead'
-  | 'regionalManager'   // << NOVÁ „kategorie“ role
+  | 'regionalManager' // << NOVÁ „kategorie“ role
 
 type Person = {
   name: string
   roleKey: RoleKey
-  phone: string
   email: string
   imageUrl: string
 }
@@ -100,35 +90,30 @@ const people: Person[] = [
   {
     name: 'Ing. Viet Duc Le',
     roleKey: 'ceo',
-    phone: '+420 000 000 000',
     email: 'le@voph.cz',
     imageUrl: person1,
   },
   {
     name: 'Hoang Pham Van',
     roleKey: 'salesDirector',
-    phone: '+420 000 000 000',
     email: 'nam@voph.cz',
     imageUrl: person2,
   },
   {
     name: 'Nguyen Van Manh',
     roleKey: 'salesRep',
-    phone: '+420 000 000 000',
     email: 'manh@voph.cz',
     imageUrl: person3,
   },
   {
     name: 'Kristýna Podlahová',
     roleKey: 'designer',
-    phone: '+420 000 000 000',
     email: 'podlahova@voph.cz',
     imageUrl: person4,
   },
   {
     name: 'Vít Sechovec',
     roleKey: 'warehouseLead',
-    phone: '+420 000 000 000',
     email: 'vit@voph.cz',
     imageUrl: person5,
   },
@@ -136,7 +121,6 @@ const people: Person[] = [
   {
     name: 'Marcel Rathouský',
     roleKey: 'regionalManager',
-    phone: '+420 000 000 000',
     email: 'marcel@voph.cz',
     imageUrl: person5, // klidně později vyměň za vlastní fotku
   },

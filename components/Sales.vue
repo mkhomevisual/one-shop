@@ -4,7 +4,7 @@ import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 type Lang = 'cz' | 'vn'
 const lang = ref<Lang>('cz')
 
-function onLangChange (e: any) {
+function onLangChange(e: any) {
   const l =
     e?.detail?.lang ??
     (typeof window !== 'undefined' ? localStorage.getItem('lang') : null)
@@ -21,9 +21,9 @@ onBeforeUnmount(() => window.removeEventListener('langchange', onLangChange))
 const t = {
   cz: {
     h2: 'Zaujala vás naše nabídka spolupráce?',
-    p:  'Napište nám a probereme to.',
+    p: 'Napište nám a probereme to.',
     first: 'Jméno',
-    last:  'Příjmení',
+    last: 'Příjmení',
     company: 'Společnost',
     email: 'E-mail',
     phone: 'Telefonní číslo',
@@ -37,9 +37,9 @@ const t = {
   },
   vn: {
     h2: 'Bạn quan tâm đến hợp tác?',
-    p:  'Hãy nhắn cho chúng tôi — cùng trao đổi chi tiết.',
+    p: 'Hãy nhắn cho chúng tôi — cùng trao đổi chi tiết.',
     first: 'Tên',
-    last:  'Họ',
+    last: 'Họ',
     company: 'Công ty',
     email: 'E-mail',
     phone: 'Số điện thoại',
@@ -50,7 +50,7 @@ const t = {
     sending: 'Đang gửi…',
     ok: 'Cảm ơn bạn! Chúng tôi sẽ liên hệ.',
     err: 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.',
-  }
+  },
 } as const
 
 /* ----- stav a odeslání ----- */
@@ -64,7 +64,7 @@ const form = reactive({
   email: '',
   phone: '',
   message: '',
-  website: '' // honeypot (skryté pole)
+  website: '', // honeypot (skryté pole)
 })
 
 async function onSubmit() {
@@ -138,7 +138,11 @@ async function onSubmit() {
           </label>
           <div class="mt-2.5">
             <input
-              id="first-name" name="first-name" v-model="form.first" type="text" autocomplete="given-name"
+              id="first-name"
+              name="first-name"
+              v-model="form.first"
+              type="text"
+              autocomplete="given-name"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
@@ -150,7 +154,11 @@ async function onSubmit() {
           </label>
           <div class="mt-2.5">
             <input
-              id="last-name" name="last-name" v-model="form.last" type="text" autocomplete="family-name"
+              id="last-name"
+              name="last-name"
+              v-model="form.last"
+              type="text"
+              autocomplete="family-name"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
@@ -162,7 +170,11 @@ async function onSubmit() {
           </label>
           <div class="mt-2.5">
             <input
-              id="company" name="company" v-model="form.company" type="text" autocomplete="organization"
+              id="company"
+              name="company"
+              v-model="form.company"
+              type="text"
+              autocomplete="organization"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
@@ -174,7 +186,11 @@ async function onSubmit() {
           </label>
           <div class="mt-2.5">
             <input
-              id="email" name="email" v-model="form.email" type="email" autocomplete="email"
+              id="email"
+              name="email"
+              v-model="form.email"
+              type="email"
+              autocomplete="email"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             />
           </div>
@@ -189,7 +205,12 @@ async function onSubmit() {
               class="flex rounded-md bg-white outline outline-1 -outline-offset-1 outline-gray-300 has-[:focus-within]:outline has-[:focus-within]:outline-2 has-[:focus-within]:-outline-offset-2 has-[:focus-within]:outline-indigo-600 dark:bg-white/5 dark:outline-white/10 dark:has-[:focus-within]:outline-indigo-500"
             >
               <input
-                id="phone-number" name="phone-number" v-model="form.phone" type="tel" inputmode="tel" autocomplete="tel"
+                id="phone-number"
+                name="phone-number"
+                v-model="form.phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
                 class="block min-w-0 grow py-1.5 pl-3 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
               />
             </div>
@@ -202,7 +223,10 @@ async function onSubmit() {
           </label>
           <div class="mt-2.5">
             <textarea
-              id="message" name="message" v-model="form.message" rows="4"
+              id="message"
+              name="message"
+              v-model="form.message"
+              rows="4"
               class="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
             ></textarea>
           </div>
@@ -234,7 +258,8 @@ async function onSubmit() {
             {{ t[lang].consent }}
             <a href="#" class="whitespace-nowrap font-semibold text-indigo-600 dark:text-indigo-400">
               {{ t[lang].consentLink }}
-            </a>.
+            </a
+            >.
           </label>
         </div>
       </div>
@@ -243,18 +268,16 @@ async function onSubmit() {
         <button
           type="submit"
           :disabled="sending"
-          class="block w-full rounded-md bg-brand-orange px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm
-                 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed
-                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 dark:bg-brand-orange"
+          class="block w-full rounded-md bg-brand-orange px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 dark:bg-brand-orange"
         >
           {{ sending ? t[lang].sending : t[lang].submit }}
         </button>
 
         <!-- Stav odeslání -->
-        <p v-if="sent==='ok'" class="mt-4 text-center text-sm text-green-600 dark:text-green-400" aria-live="polite">
+        <p v-if="sent === 'ok'" class="mt-4 text-center text-sm text-green-600 dark:text-green-400" aria-live="polite">
           {{ t[lang].ok }}
         </p>
-        <p v-else-if="sent==='err'" class="mt-4 text-center text-sm text-red-600 dark:text-red-400" aria-live="polite">
+        <p v-else-if="sent === 'err'" class="mt-4 text-center text-sm text-red-600 dark:text-red-400" aria-live="polite">
           {{ t[lang].err }}
         </p>
       </div>
