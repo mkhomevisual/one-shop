@@ -31,6 +31,9 @@ const t = {
     sending: 'Odesílám…',
     ok: 'Děkujeme! Ozveme se vám.',
     err: 'Omlouváme se, něco se pokazilo. Zkuste to prosím znovu.',
+    callUs: 'Nebo nám rovnou zavolejte',
+    czech: 'Česky',
+    vietnamese: 'Vietnamsky',
   },
   vn: {
     h2: 'Bạn quan tâm đến hợp tác?',
@@ -47,6 +50,9 @@ const t = {
     sending: 'Đang gửi…',
     ok: 'Cảm ơn bạn! Chúng tôi sẽ liên hệ.',
     err: 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.',
+    callUs: 'Hoặc gọi cho chúng tôi',
+    czech: 'Tiếng Séc',
+    vietnamese: 'Tiếng Việt',
   },
 } as const
 
@@ -63,7 +69,6 @@ const form = reactive({
   website: '', // honeypot
 })
 
-// Netlify Forms vyžaduje application/x-www-form-urlencoded a pole "form-name"
 function encode(data: Record<string, string>) {
   return Object.keys(data)
     .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(data[k] ?? ''))
@@ -72,8 +77,6 @@ function encode(data: Record<string, string>) {
 
 async function onSubmit() {
   sent.value = null
-
-  // lehká validace
   if (!form.first || !form.last || !form.email || !form.message) {
     sent.value = 'err'
     return
@@ -89,7 +92,7 @@ async function onSubmit() {
       email: form.email,
       phone: form.phone,
       message: form.message,
-      website: form.website, // honeypot
+      website: form.website,
     }
 
     const res = await fetch('/', {
@@ -98,9 +101,8 @@ async function onSubmit() {
       body: encode(payload),
     })
 
+    sent.value = res.ok ? 'ok' : 'err'
     if (res.ok) {
-      sent.value = 'ok'
-      // vyčistit
       form.first = ''
       form.last = ''
       form.company = ''
@@ -108,8 +110,6 @@ async function onSubmit() {
       form.phone = ''
       form.message = ''
       form.website = ''
-    } else {
-      sent.value = 'err'
     }
   } catch {
     sent.value = 'err'
@@ -140,7 +140,6 @@ async function onSubmit() {
       <p class="mt-2 text-lg/8 text-gray-600 dark:text-gray-400">{{ t[lang].p }}</p>
     </div>
 
-    <!-- Netlify Forms: name, method, data-netlify a honeypot -->
     <form
       name="contact"
       method="POST"
@@ -150,9 +149,7 @@ async function onSubmit() {
       @submit.prevent="onSubmit"
       novalidate
     >
-      <!-- POZOR: povinné skryté pole se jménem formuláře -->
       <input type="hidden" name="form-name" value="contact" />
-      <!-- honeypot – Netlify si hlídá podle atributu i podle name -->
       <input class="hidden" type="text" name="website" v-model="form.website" tabindex="-1" autocomplete="off" />
 
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -256,7 +253,6 @@ async function onSubmit() {
           </div>
         </div>
 
-        <!-- honeypot už je nahoře -->
         <div class="flex gap-x-4 sm:col-span-2">
           <div class="flex h-6 items-center">
             <div
@@ -290,6 +286,19 @@ async function onSubmit() {
         <p v-else-if="sent==='err'" class="mt-4 text-center text-sm text-red-600 dark:text-red-400" aria-live="polite">
           {{ t[lang].err }}
         </p>
+
+        <!-- Telefonní kontakty pod formulářem -->
+        <div class="mt-8 grid gap-3 text-center text-sm text-gray-700 dark:text-gray-300">
+          <div class="font-medium">{{ t[lang].callUs }}</div>
+          <div class="flex items-center justify-center gap-3">
+            <a href="tel:+420775372789" class="font-semibold hover:underline">+420&nbsp;775&nbsp;372&nbsp;789</a>
+            <span class="text-gray-500">— {{ t[lang].czech }}</span>
+          </div>
+          <div class="flex items-center justify-center gap-3">
+            <a href="tel:+420725637736" class="font-semibold hover:underline">+420&nbsp;725&nbsp;637&nbsp;736</a>
+            <span class="text-gray-500">— {{ t[lang].vietnamese }}</span>
+          </div>
+        </div>
       </div>
     </form>
   </section>
