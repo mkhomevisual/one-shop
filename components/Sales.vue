@@ -5,12 +5,9 @@ type Lang = 'cz' | 'vn'
 const lang = ref<Lang>('cz')
 
 function onLangChange(e: any) {
-  const l =
-    e?.detail?.lang ??
-    (typeof window !== 'undefined' ? localStorage.getItem('lang') : null)
+  const l = e?.detail?.lang ?? (typeof window !== 'undefined' ? localStorage.getItem('lang') : null)
   if (l === 'cz' || l === 'vn') lang.value = l
 }
-
 onMounted(() => {
   const saved = localStorage.getItem('lang')
   if (saved === 'cz' || saved === 'vn') lang.value = saved
@@ -53,7 +50,6 @@ const t = {
   },
 } as const
 
-/* ----- stav a odeslání ----- */
 const sending = ref(false)
 const sent = ref<null | 'ok' | 'err'>(null)
 
@@ -64,13 +60,20 @@ const form = reactive({
   email: '',
   phone: '',
   message: '',
-  website: '', // honeypot (skryté pole)
+  website: '', // honeypot
 })
+
+// Netlify Forms vyžaduje application/x-www-form-urlencoded a pole "form-name"
+function encode(data: Record<string, string>) {
+  return Object.keys(data)
+    .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(data[k] ?? ''))
+    .join('&')
+}
 
 async function onSubmit() {
   sent.value = null
 
-  // jednoduchá validace na klientu
+  // lehká validace
   if (!form.first || !form.last || !form.email || !form.message) {
     sent.value = 'err'
     return
@@ -78,13 +81,24 @@ async function onSubmit() {
 
   sending.value = true
   try {
-    const res = await fetch('/api/send.php', {
+    const payload = {
+      'form-name': 'contact',
+      first: form.first,
+      last: form.last,
+      company: form.company,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      website: form.website, // honeypot
+    }
+
+    const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encode(payload),
     })
-    const data = await res.json().catch(() => ({}))
-    if (res.ok && (data as any)?.ok) {
+
+    if (res.ok) {
       sent.value = 'ok'
       // vyčistit
       form.first = ''
@@ -106,9 +120,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <!-- Cíl pro smooth scroll z navbaru -->
   <section id="sales" class="relative isolate bg-gray-100 px-6 py-24 sm:py-32 lg:px-8 dark:bg-gray-900">
-    <!-- Dekorativní blob -->
     <div
       class="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80"
       aria-hidden="true"
@@ -121,7 +133,6 @@ async function onSubmit() {
       />
     </div>
 
-    <!-- Nadpisy -->
     <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
         {{ t[lang].h2 }}
@@ -129,8 +140,21 @@ async function onSubmit() {
       <p class="mt-2 text-lg/8 text-gray-600 dark:text-gray-400">{{ t[lang].p }}</p>
     </div>
 
-    <!-- Formulář -->
-    <form class="mx-auto mt-16 max-w-xl sm:mt-20" @submit.prevent="onSubmit" novalidate>
+    <!-- Netlify Forms: name, method, data-netlify a honeypot -->
+    <form
+      name="contact"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="website"
+      class="mx-auto mt-16 max-w-xl sm:mt-20"
+      @submit.prevent="onSubmit"
+      novalidate
+    >
+      <!-- POZOR: povinné skryté pole se jménem formuláře -->
+      <input type="hidden" name="form-name" value="contact" />
+      <!-- honeypot – Netlify si hlídá podle atributu i podle name -->
+      <input class="hidden" type="text" name="website" v-model="form.website" tabindex="-1" autocomplete="off" />
+
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
         <div>
           <label for="first-name" class="block text-sm/6 font-semibold text-gray-900 dark:text-white">
@@ -139,7 +163,7 @@ async function onSubmit() {
           <div class="mt-2.5">
             <input
               id="first-name"
-              name="first-name"
+              name="first"
               v-model="form.first"
               type="text"
               autocomplete="given-name"
@@ -155,7 +179,7 @@ async function onSubmit() {
           <div class="mt-2.5">
             <input
               id="last-name"
-              name="last-name"
+              name="last"
               v-model="form.last"
               type="text"
               autocomplete="family-name"
@@ -206,7 +230,7 @@ async function onSubmit() {
             >
               <input
                 id="phone-number"
-                name="phone-number"
+                name="phone"
                 v-model="form.phone"
                 type="tel"
                 inputmode="tel"
@@ -232,25 +256,13 @@ async function onSubmit() {
           </div>
         </div>
 
-        <!-- Honeypot (skryté) -->
-        <input
-          type="text"
-          v-model="form.website"
-          name="website"
-          class="hidden"
-          tabindex="-1"
-          autocomplete="off"
-          aria-hidden="true"
-        />
-
+        <!-- honeypot už je nahoře -->
         <div class="flex gap-x-4 sm:col-span-2">
           <div class="flex h-6 items-center">
             <div
               class="group relative inline-flex w-8 shrink-0 rounded-full bg-gray-200 p-px outline-offset-2 outline-gray-600 ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out has-[:checked]:bg-gray-600 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 dark:bg-white/5 dark:outline-indigo-500 dark:ring-white/10 dark:has-[:checked]:bg-indigo-500"
             >
-              <span
-                class="size-4 rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-[:checked]:translate-x-3.5"
-              />
+              <span class="size-4 rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-[:checked]:translate-x-3.5" />
               <input type="checkbox" class="absolute inset-0 appearance-none focus:outline-none" id="agree-to-policies" name="agree-to-policies" />
             </div>
           </div>
@@ -258,8 +270,7 @@ async function onSubmit() {
             {{ t[lang].consent }}
             <a href="#" class="whitespace-nowrap font-semibold text-indigo-600 dark:text-indigo-400">
               {{ t[lang].consentLink }}
-            </a
-            >.
+            </a>.
           </label>
         </div>
       </div>
@@ -273,11 +284,10 @@ async function onSubmit() {
           {{ sending ? t[lang].sending : t[lang].submit }}
         </button>
 
-        <!-- Stav odeslání -->
-        <p v-if="sent === 'ok'" class="mt-4 text-center text-sm text-green-600 dark:text-green-400" aria-live="polite">
+        <p v-if="sent==='ok'" class="mt-4 text-center text-sm text-green-600 dark:text-green-400" aria-live="polite">
           {{ t[lang].ok }}
         </p>
-        <p v-else-if="sent === 'err'" class="mt-4 text-center text-sm text-red-600 dark:text-red-400" aria-live="polite">
+        <p v-else-if="sent==='err'" class="mt-4 text-center text-sm text-red-600 dark:text-red-400" aria-live="polite">
           {{ t[lang].err }}
         </p>
       </div>
