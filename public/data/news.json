@@ -1,16 +1,3 @@
 {
-  "items": [
-    {
-      "title": {
-        "cz": "Otevíráme novou pobočku v Děčíně",
-        "vn": "OneShop đã mở chi nhánh mới tại Děčín."
-      },
-      "date": "2025-09-22",
-      "excerpt": {
-        "cz": "Test text",
-        "vn": "Test text VN"
-      },
-      "image": "/img/uploads/blueimg.jpeg"
-    }
-  ]
+  "items": []
 }
