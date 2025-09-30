@@ -13,10 +13,6 @@
 
     <SectionDivider class="my-0 sm:my-0" />
 
-    <OurTeam />
-
-    <SectionDivider class="my-0 sm:my-0" />
-
     <OSMap />
 
     <SectionDivider class="my-0 sm:my-0" />
@@ -24,6 +20,8 @@
     <OsKategorieGrid />
 
       <SectionDivider class="my-0 sm:my-0" />
+
+    <OurTeam />
 
   <News />
 

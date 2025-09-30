@@ -114,7 +114,7 @@ const people: Person[] = [
   {
     name: 'Vít Sechovec',
     roleKey: 'warehouseLead',
-    email: 'vit@voph.cz',
+    email: 'sechovec@voph.cz',
     imageUrl: person5,
   },
   // --- NOVĚ PŘIDÁNO ---

@@ -31,12 +31,16 @@
                        focus:ring-2 focus:ring-brand-orange"
               />
               <div class="hidden sm:flex gap-1">
-                <button @click="scrollList(-1)"
-                        class="rounded-md px-2.5 py-2 ring-1 ring-black/10 dark:ring-white/10 bg-white dark:bg-neutral-900 hover:bg-black/5 dark:hover:bg-white/5"
-                        :aria-label="t.scrollUp">↑</button>
-                <button @click="scrollList(1)"
-                        class="rounded-md px-2.5 py-2 ring-1 ring-black/10 dark:ring-white/10 bg-white dark:bg-neutral-900 hover:bg-black/5 dark:hover:bg-white/5"
-                        :aria-label="t.scrollDown">↓</button>
+                <button
+                  @click="scrollList(-1)"
+                  class="rounded-md px-2.5 py-2 ring-1 ring-black/10 dark:ring-white/10 bg-white dark:bg-neutral-900 hover:bg-black/5 dark:hover:bg-white/5 text-neutral-900 dark:text-white"
+                  :aria-label="t.scrollUp"
+                >↑</button>
+                <button
+                  @click="scrollList(1)"
+                  class="rounded-md px-2.5 py-2 ring-1 ring-black/10 dark:ring-white/10 bg-white dark:bg-neutral-900 hover:bg-black/5 dark:hover:bg-white/5 text-neutral-900 dark:text-white"
+                  :aria-label="t.scrollDown"
+                >↓</button>
               </div>
             </div>
 
