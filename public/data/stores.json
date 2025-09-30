@@ -3,8 +3,8 @@
     {
       "id": 3,
       "name": {
-        "cz": "PH Diskont Tábor",
-        "vn": "PH Diskont Tábor"
+        "cz": "ONESHOP Tábor",
+        "vn": "ONESHOP Tábor"
       },
       "address": "Světlogorská 2767/8, 390 05 Tábor 5",
       "hours": {
@@ -68,7 +68,7 @@
       },
       "address": "Laurinova 1383, 293 01 Mladá Boleslav 1",
       "hours": {
-        "cz": "Pondělí - Pátek: 6:30 - 21:00, Sobota - Neděle: 7-21",
+        "cz": "Po - Pá: 6:30 - 21:00, So - Ne: 7-21",
         "vn": ""
       }
     }
