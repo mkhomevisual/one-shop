@@ -59,6 +59,18 @@
       "phone": "",
       "lat": null,
       "lng": null
+    },
+    {
+      "id": 1,
+      "name": {
+        "cz": "ONESHOP Partner Mladá Boleslav",
+        "vn": "ONESHOP Partner Mladá Boleslav"
+      },
+      "address": "Laurinova 1383, 293 01 Mladá Boleslav 1",
+      "hours": {
+        "cz": "Pondělí - Pátek: 6:30 - 21:00, Sobota - Neděle: 7-21",
+        "vn": ""
+      }
     }
   ]
 }
