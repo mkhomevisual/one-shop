@@ -19,3 +19,19 @@ export default defineNuxtConfig({
     '/admin/**': { prerender: false },
   },
 })
+
+// nuxt.config.ts
+export default defineNuxtConfig({
+  app: {
+    head: {
+      link: [
+        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
+      meta: [
+        { name: 'theme-color', content: '#000000' }, // barva lišty/pwa
+      ]
+    }
+  }
+})
