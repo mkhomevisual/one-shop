@@ -115,6 +115,30 @@
         "vn": "Thứ 2–6 6:00-20:00, Thứ 7-Cn 7:00-20:00"
       },
       "id": 0
+    },
+    {
+      "id": 0,
+      "name": {
+        "cz": "ONESHOP Partner Stráž pod Ralskem",
+        "vn": "ONESHOP Partner Stráž pod Ralskem"
+      },
+      "address": "Mimoňská 419, 471 27 Stráž pod Ralskem",
+      "hours": {
+        "cz": "Po - Ne: 7:00-22:00",
+        "vn": "Thứ 2–CN 7:00-22:00"
+      }
+    },
+    {
+      "id": 0,
+      "name": {
+        "cz": "ONESHOP Horšovský Týn",
+        "vn": "ONESHOP Horšovský Týn"
+      },
+      "address": "Dr. E. Beneše 13, 346 01 Horšovský Týn-Malé Předměstí",
+      "hours": {
+        "cz": "Po - Pá: 8:00-17:00, So: 8:00-12:00, Ne: 7:00-12:00",
+        "vn": "Thứ 2 - Thứ 6: 8:00-17:00, Thứ 7: 8:00-12:00, CN: 7:00-12:00"
+      }
     }
   ]
 }
