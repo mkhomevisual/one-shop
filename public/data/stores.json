@@ -91,6 +91,18 @@
       },
       "address": "Plynarenská 284, 415 01 Teplice",
       "id": 0
+    },
+    {
+      "id": 0,
+      "name": {
+        "cz": "ONESHOP Partner Kraslice",
+        "vn": "ONESHOP Partner Kraslice"
+      },
+      "address": "5. května 1925, 358 01 Kraslice",
+      "hours": {
+        "cz": "Po - Pá: 8:00-18:00, So-Ne: 9:00-17:00",
+        "vn": "Thứ 2–6 8:00–18:00, Thứ 7-Cn 9:00-17:00"
+      }
     }
   ]
 }
