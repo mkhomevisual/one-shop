@@ -103,6 +103,18 @@
         "cz": "Po - Pá: 8:00-18:00, So-Ne: 9:00-17:00",
         "vn": "Thứ 2–6 8:00–18:00, Thứ 7-Cn 9:00-17:00"
       }
+    },
+    {
+      "name": {
+        "cz": "ONESHOP Partner Libochovice",
+        "vn": "ONESHOP Partner Libochovice"
+      },
+      "address": "Dr. Vacka 46, 411 17 Libochovice",
+      "hours": {
+        "cz": "Po - Pá: 6:00-20:00, So-Ne: 7:00-20:00",
+        "vn": "Thứ 2–6 6:00-20:00, Thứ 7-Cn 7:00-20:00"
+      },
+      "id": 0
     }
   ]
 }
