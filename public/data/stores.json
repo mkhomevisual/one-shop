@@ -71,6 +71,18 @@
       "phone": "",
       "lat": null,
       "lng": null
+    },
+    {
+      "id": 0,
+      "name": {
+        "cz": "ONESHOP Děčín",
+        "vn": "ONESHOP Děčín"
+      },
+      "address": "Jezdecká 327/28, Děčín 405",
+      "hours": {
+        "cz": "Po - Pá: 7:00-19:00, So-Ne: 7:00-18:00",
+        "vn": "Thứ 2–6 7:00–19:00, Thứ 7-Cn 7:00-18:00"
+      }
     }
   ]
 }
