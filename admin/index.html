@@ -153,9 +153,9 @@
             }
 
             paths = [];
-            /* Upload in batches of 4 to avoid GitHub API overload */
-            for (var i = 0; i < selected.length; i += 4) {
-              var batch = selected.slice(i, i + 4);
+            /* Upload in batches of 2 — reduces GitHub SHA conflict probability */
+            for (var i = 0; i < selected.length; i += 2) {
+              var batch = selected.slice(i, i + 2);
               var batchPaths = await Promise.all(batch.map(uploadOne));
               paths.push.apply(paths, batchPaths);
             }

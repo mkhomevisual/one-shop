@@ -51,24 +51,28 @@ export const handler = async (event) => {
     const fname    = sanitize(filename);
     const filePath = `img/uploads/${fname}`;
 
-    // Check if file exists — need existing SHA to overwrite
-    let sha;
-    const check = await gh(`/contents/${filePath}?ref=${BRANCH}`);
-    if (check.ok) {
-      sha = (await check.json()).sha;
-    }
+    // Retry up to 4 times on SHA conflicts (GitHub API replication lag)
+    let lastErr;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 600 * attempt));
 
-    // Commit the file
-    const body = { message: `Upload letak: ${fname}`, content: data, branch: BRANCH };
-    if (sha) body.sha = sha;
+      let sha;
+      const check = await gh(`/contents/${filePath}?ref=${BRANCH}`);
+      if (check.ok) sha = (await check.json()).sha;
 
-    const res = await gh(`/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
-    if (!res.ok) {
+      const body = { message: `Upload letak: ${fname}`, content: data, branch: BRANCH };
+      if (sha) body.sha = sha;
+
+      const res = await gh(`/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+      if (res.ok) {
+        return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, path: `/${filePath}` }) };
+      }
+
       const e = await res.json();
-      throw new Error(e.message || `GitHub API ${res.status}`);
+      lastErr = new Error(e.message || `GitHub API ${res.status}`);
+      if (res.status !== 409) throw lastErr; // non-conflict errors are fatal
     }
-
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, path: `/${filePath}` }) };
+    throw lastErr;
   } catch (e) {
     return { statusCode: 500, headers: CORS, body: JSON.stringify({ ok: false, error: e.message }) };
   }

@@ -168,6 +168,7 @@ collections:
               - label: "Telefon"
                 name: "phone"
                 widget: "string"
+                required: false
               - label: "Otevírací doba CZ"
                 name: "hours_cz"
                 widget: "string"
@@ -175,26 +176,33 @@ collections:
               - label: "Otevírací doba VN"
                 name: "hours_vn"
                 widget: "string"
+                required: false
               - label: "Testimonial — citát CZ"
                 name: "quote_cz"
                 widget: "text"
+                required: false
               - label: "Testimonial — citát VN"
                 name: "quote_vn"
                 widget: "text"
+                required: false
               - label: "Jméno majitele / autora citátu"
                 name: "owner_name"
                 widget: "string"
+                required: false
               - label: "Iniciály (2-3 znaky)"
                 name: "owner_initials"
                 widget: "string"
                 hint: "Např. NT"
+                required: false
               - label: "Pozice majitele CZ"
                 name: "owner_position_cz"
                 widget: "string"
                 hint: "Např. Majitel, prodejna Tábor"
+                required: false
               - label: "Pozice majitele VN"
                 name: "owner_position_vn"
                 widget: "string"
+                required: false
               - label: "Fotka pobočky 1"
                 name: "photo_1"
                 widget: "image"
