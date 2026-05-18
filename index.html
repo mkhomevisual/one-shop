@@ -413,10 +413,10 @@ button{cursor:pointer;font-family:inherit}
 .lp-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;padding:0;transition:.2s;line-height:1}
 .lp-close:hover{background:rgba(249,115,22,.2);border-color:var(--border-accent)}
 .lp-body{flex:1;overflow-y:auto;padding:24px}
-.lp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.lp-item{aspect-ratio:5/8;overflow:hidden;border-radius:var(--r-sm);background:var(--bg3);border:1px solid var(--border);transition:border-color .2s,transform .25s var(--ease);cursor:zoom-in}
+.lp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:80%;margin:0 auto}
+.lp-item{overflow:hidden;border-radius:var(--r-sm);background:var(--bg3);border:1px solid var(--border);transition:border-color .2s,transform .25s var(--ease);cursor:zoom-in}
 .lp-item:hover{border-color:var(--border-accent);transform:translateY(-3px)}
-.lp-item img{width:100%;height:100%;object-fit:cover;display:block}
+.lp-item img{width:100%;height:auto;display:block}
 @media(max-width:960px){.letak-split{grid-template-columns:1fr;gap:48px}}
 @media(max-width:768px){
   .letak-stats-row{gap:16px}
