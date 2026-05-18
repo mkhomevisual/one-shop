@@ -6,13 +6,5 @@
   "description_vn": "Khám phá ưu đãi, giảm giá và sản phẩm mới nhất. Tờ rơi có hiệu lực từ 20/5 đến 2/6/2026 hoặc hết hàng.",
   "validity_cz": "20. 5. – 2. 6. 2026",
   "validity_vn": "20/5 – 2/6/2026",
-  "pages": [
-    "/img/uploads/CivO_Drip_2.png",
-    "/img/uploads/CivO_Drip_3.png",
-    "/img/uploads/CivO_Drip_4.png",
-    "/img/uploads/CivO_Drip_8.png",
-    "/img/uploads/phtest1.png",
-    "/img/uploads/phtest2.png",
-    "/img/uploads/phtest3.png"
-  ]
+  "pages": []
 }
