@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leták – hromadný upload stránek</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,sans-serif;background:#f5f5f4;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{background:#fff;border-radius:12px;padding:40px;max-width:620px;width:100%;box-shadow:0 2px 20px rgba(0,0,0,.08)}
+    h1{font-size:1.4rem;font-weight:700;color:#1c1c1c;margin-bottom:6px}
+    .sub{font-size:.875rem;color:#6b7280;margin-bottom:28px;line-height:1.5}
+    .drop{border:2px dashed #d1d5db;border-radius:10px;padding:48px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+    .drop:hover,.drop.over{border-color:#f97316;background:#fff7ed}
+    .drop-icon{font-size:2.5rem;margin-bottom:10px}
+    .drop-text{font-size:.9375rem;color:#374151;font-weight:500}
+    .drop-hint{font-size:.8rem;color:#9ca3af;margin-top:4px}
+    input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .file-list{margin-top:16px;font-size:.8125rem;color:#6b7280;max-height:120px;overflow-y:auto;line-height:1.8}
+    .file-list span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+    .btn{padding:11px 24px;border-radius:7px;font-size:.9375rem;font-weight:600;cursor:pointer;border:none;transition:opacity .2s}
+    .btn-primary{background:#f97316;color:#fff}
+    .btn-secondary{background:#f3f4f6;color:#374151}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+    .progress{margin-top:16px;display:none}
+    .progress-bar-wrap{background:#f3f4f6;border-radius:100px;height:8px;overflow:hidden;margin-top:8px}
+    .progress-bar{height:100%;background:#f97316;border-radius:100px;transition:width .3s;width:0%}
+    .progress-text{font-size:.8rem;color:#6b7280;margin-top:6px}
+    .result{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:.875rem;font-weight:500;display:none}
+    .result.ok{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+    .result.err{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+    .mode-toggle{display:flex;gap:8px;margin-bottom:20px}
+    .mode-btn{padding:7px 16px;border-radius:6px;font-size:.8125rem;font-weight:600;cursor:pointer;border:1px solid #e5e7eb;background:#fff;color:#6b7280;transition:all .2s}
+    .mode-btn.active{background:#f97316;color:#fff;border-color:#f97316}
+    label.field-label{display:block;font-size:.8125rem;font-weight:600;color:#374151;margin-bottom:6px}
+    .note{font-size:.75rem;color:#9ca3af;margin-top:20px;line-height:1.5;padding-top:16px;border-top:1px solid #f3f4f6}
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Hromadný upload obrázků</h1>
+  <p class="sub">Nahraj najednou stránky letáku nebo fotky pobočky. Soubory se uloží do <code>/img/uploads/</code> a příslušný JSON se automaticky aktualizuje.<br>Vyžaduje spuštěný <strong>serve.py</strong>.</p>
+
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeLetak" onclick="setMode('letak')">Stránky letáku</button>
+    <button class="mode-btn" id="modeStore" onclick="setMode('store')">Fotky pobočky</button>
+  </div>
+
+  <div id="storeSelector" style="display:none;margin-bottom:16px">
+    <label class="field-label">Pobočka</label>
+    <select id="storeSelect" style="width:100%;padding:9px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:.9375rem;color:#374151;background:#fff"></select>
+  </div>
+
+  <div class="drop" id="drop">
+    <div class="drop-icon">📁</div>
+    <div class="drop-text">Přetáhni sem soubory nebo klikni pro výběr</div>
+    <div class="drop-hint" id="dropHint">JPG, PNG — libovolný počet najednou</div>
+    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)"/>
+  </div>
+
+  <div class="file-list" id="fileList"></div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="uploadBtn" onclick="doUpload()" disabled>Nahrát a uložit</button>
+    <button class="btn btn-secondary" onclick="reset()">Resetovat</button>
+  </div>
+
+  <div class="progress" id="progress">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 0</div>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <p class="note">
+    <strong>Leták:</strong> stávající stránky se nahradí nově nahranými.<br>
+    <strong>Pobočka:</strong> přiřadí fotky 1–4 k vybrané pobočce (přepíše stávající).<br>
+    Pokud <em>serve.py</em> neběží, zobrazí se chybová hláška.
+  </p>
+</div>
+
+<script>
+let mode = 'letak';
+let selected = [];
+let stores = [];
+
+async function init() {
+  try {
+    const r = await fetch('/data/stores.json', { cache: 'no-store' });
+    const d = await r.json();
+    stores = (d?.root ?? d) || [];
+    const sel = document.getElementById('storeSelect');
+    sel.innerHTML = stores.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
+  } catch(e) { /* stores not critical for letak mode */ }
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeLetak').classList.toggle('active', m === 'letak');
+  document.getElementById('modeStore').classList.toggle('active', m === 'store');
+  document.getElementById('storeSelector').style.display = m === 'store' ? 'block' : 'none';
+  document.getElementById('dropHint').textContent = m === 'store'
+    ? 'JPG, PNG — max 4 fotky (přebývající se ignorují)'
+    : 'JPG, PNG — libovolný počet najednou';
+  reset();
+}
+
+function handleFiles(files) {
+  selected = Array.from(files);
+  if (mode === 'store' && selected.length > 4) selected = selected.slice(0, 4);
+  const list = document.getElementById('fileList');
+  list.innerHTML = selected.length
+    ? `<strong>${selected.length} soubor${selected.length === 1 ? '' : selected.length < 5 ? 'y' : 'ů'}</strong>: `
+      + selected.map(f => `<span>· ${f.name}</span>`).join('')
+    : '';
+  document.getElementById('uploadBtn').disabled = selected.length === 0;
+  document.getElementById('result').style.display = 'none';
+}
+
+async function doUpload() {
+  if (!selected.length) return;
+  const btn = document.getElementById('uploadBtn');
+  const prog = document.getElementById('progress');
+  const bar = document.getElementById('progressBar');
+  const progText = document.getElementById('progressText');
+  const res = document.getElementById('result');
+
+  btn.disabled = true;
+  prog.style.display = 'block';
+  res.style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('mode', mode);
+  if (mode === 'store') {
+    const idx = document.getElementById('storeSelect').value;
+    fd.append('store_index', idx);
+  }
+  selected.forEach(f => fd.append('files', f));
+
+  progText.textContent = 'Nahrávám...';
+  bar.style.width = '30%';
+
+  try {
+    const r = await fetch('/api/upload', { method: 'POST', body: fd });
+    bar.style.width = '100%';
+    const d = await r.json();
+    prog.style.display = 'none';
+    res.style.display = 'block';
+    if (d.ok) {
+      res.className = 'result ok';
+      res.textContent = `✓ Nahráno ${d.files.length} soubor${d.files.length === 1 ? '' : d.files.length < 5 ? 'y' : 'ů'}. JSON aktualizován.`;
+      reset(true);
+    } else {
+      res.className = 'result err';
+      res.textContent = 'Chyba: ' + d.error;
+    }
+  } catch(e) {
+    prog.style.display = 'none';
+    res.style.display = 'block';
+    res.className = 'result err';
+    res.textContent = 'Nepodařilo se připojit. Běží serve.py na portu 8181?';
+    btn.disabled = false;
+  }
+}
+
+function reset(keepResult) {
+  selected = [];
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileList').innerHTML = '';
+  document.getElementById('uploadBtn').disabled = true;
+  document.getElementById('progress').style.display = 'none';
+  if (!keepResult) document.getElementById('result').style.display = 'none';
+}
+
+const drop = document.getElementById('drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('over');
+  handleFiles(e.dataTransfer.files);
+});
+
+init();
+</script>
+</body>
+</html>

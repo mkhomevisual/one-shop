@@ -1,0 +1,213 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+
+  # ── LETÁK ─────────────────────────────────────────────────────
+  - label: "Leták"
+    name: "letak"
+    files:
+      - label: "Leták (data)"
+        name: "letakdata"
+        file: "data/letak.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Náhledový obrázek letáku"
+            name: "preview_image"
+            widget: "image"
+            hint: "Titulní obrázek zobrazený na webu (letak-preview.png)"
+          - label: "Název CZ"
+            name: "title_cz"
+            widget: "string"
+          - label: "Název VN"
+            name: "title_vn"
+            widget: "string"
+          - label: "Popis CZ"
+            name: "description_cz"
+            widget: "text"
+          - label: "Popis VN"
+            name: "description_vn"
+            widget: "text"
+          - label: "Platnost CZ (text)"
+            name: "validity_cz"
+            widget: "string"
+            hint: "Např. 20. 5. – 2. 6. 2026"
+          - label: "Platnost VN (text)"
+            name: "validity_vn"
+            widget: "string"
+            hint: "Např. 20/5 – 2/6/2026"
+          - label: "Položky letáku (fotky)"
+            name: "pages"
+            widget: "list"
+            hint: "Nahraj jednotlivé položky/obrázky letáku (JPG nebo PNG)"
+            field:
+              label: "Obrázek položky"
+              name: "page"
+              widget: "image"
+
+  # ── NOVINKY ───────────────────────────────────────────────────
+  - label: "Novinky"
+    name: "news"
+    files:
+      - label: "Novinky (seznam)"
+        name: "newslist"
+        file: "data/news.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Příspěvky"
+            name: "root"
+            widget: "list"
+            summary: "{{fields.title_cz}} — {{fields.date}}"
+            fields:
+              - label: "Nadpis CZ"
+                name: "title_cz"
+                widget: "string"
+              - label: "Nadpis VN"
+                name: "title_vn"
+                widget: "string"
+              - label: "Datum"
+                name: "date"
+                widget: "datetime"
+                time_format: false
+                format: "YYYY-MM-DD"
+              - label: "Kategorie CZ"
+                name: "category_cz"
+                widget: "string"
+                default: "Novinky"
+                required: false
+              - label: "Kategorie VN"
+                name: "category_vn"
+                widget: "string"
+                default: "Tin tức"
+                required: false
+              - label: "Perex CZ"
+                name: "excerpt_cz"
+                widget: "text"
+              - label: "Perex VN"
+                name: "excerpt_vn"
+                widget: "text"
+              - label: "Náhledová fotka"
+                name: "image"
+                widget: "image"
+                required: false
+
+  # ── TÝM ───────────────────────────────────────────────────────
+  - label: "Tým"
+    name: "team"
+    files:
+      - label: "Členové týmu"
+        name: "teamlist"
+        file: "data/team.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Členové"
+            name: "root"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.position_cz}}"
+            fields:
+              - label: "Jméno Příjmení"
+                name: "name"
+                widget: "string"
+              - label: "Pozice CZ"
+                name: "position_cz"
+                widget: "string"
+              - label: "Pozice VN"
+                name: "position_vn"
+                widget: "string"
+              - label: "Telefon"
+                name: "phone"
+                widget: "string"
+                hint: "Např. 775 372 979 (bez předvolby)"
+              - label: "E-mail"
+                name: "email"
+                widget: "string"
+
+  # ── POBOČKY ───────────────────────────────────────────────────
+  - label: "Pobočky"
+    name: "stores"
+    files:
+      - label: "Seznam poboček"
+        name: "storeslist"
+        file: "data/stores.json"
+        format: "json"
+        editor:
+          preview: false
+        fields:
+          - label: "Pobočky"
+            name: "root"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.city_subtitle}}"
+            fields:
+              - label: "ID (číslo)"
+                name: "id"
+                widget: "number"
+                value_type: "int"
+              - label: "Název pobočky"
+                name: "name"
+                widget: "string"
+                hint: "Např. ONESHOP Tábor"
+              - label: "Podtitulek (sidebar)"
+                name: "city_subtitle"
+                widget: "string"
+                hint: "Např. Tábor · Světlogorská"
+              - label: "Adresa"
+                name: "address"
+                widget: "string"
+              - label: "Telefon"
+                name: "phone"
+                widget: "string"
+              - label: "Otevírací doba CZ"
+                name: "hours_cz"
+                widget: "string"
+                hint: "Např. Po–Ne 8:00–19:00"
+              - label: "Otevírací doba VN"
+                name: "hours_vn"
+                widget: "string"
+              - label: "Testimonial — citát CZ"
+                name: "quote_cz"
+                widget: "text"
+              - label: "Testimonial — citát VN"
+                name: "quote_vn"
+                widget: "text"
+              - label: "Jméno majitele / autora citátu"
+                name: "owner_name"
+                widget: "string"
+              - label: "Iniciály (2-3 znaky)"
+                name: "owner_initials"
+                widget: "string"
+                hint: "Např. NT"
+              - label: "Pozice majitele CZ"
+                name: "owner_position_cz"
+                widget: "string"
+                hint: "Např. Majitel, prodejna Tábor"
+              - label: "Pozice majitele VN"
+                name: "owner_position_vn"
+                widget: "string"
+              - label: "Fotka pobočky 1"
+                name: "photo_1"
+                widget: "image"
+                required: false
+              - label: "Fotka pobočky 2"
+                name: "photo_2"
+                widget: "image"
+                required: false
+              - label: "Fotka pobočky 3"
+                name: "photo_3"
+                widget: "image"
+                required: false
+              - label: "Fotka pobočky 4"
+                name: "photo_4"
+                widget: "image"
+                required: false

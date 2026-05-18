@@ -1,0 +1,27 @@
+[build]
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Block local-only dev tools from production
+[[redirects]]
+  from = "/letak-uploader.html"
+  to   = "/"
+  status = 404
+  force  = true
+
+[[redirects]]
+  from = "/serve.py"
+  to   = "/"
+  status = 404
+  force  = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"

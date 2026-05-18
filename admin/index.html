@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One-Shop CMS</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+  /* Bulk letak uploader — floating button, vanilla JS, no React conflicts */
+  (function () {
+    var btn, overlay;
+
+    function onLetakPage() {
+      return window.location.hash.includes('/collections/letak');
+    }
+
+    /* ── floating button ── */
+    function makeBtn() {
+      var b = document.createElement('button');
+      b.textContent = '📁 Hromadný upload položek';
+      b.title = 'Nahrát všechny stránky letáku najednou';
+      Object.assign(b.style, {
+        position: 'fixed', bottom: '24px', right: '24px', zIndex: '99999',
+        background: '#f97316', color: '#fff', border: 'none',
+        padding: '11px 18px', borderRadius: '8px',
+        fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+        boxShadow: '0 4px 16px rgba(249,115,22,.45)',
+        display: 'none', transition: 'opacity .2s',
+      });
+      b.addEventListener('click', openModal);
+      document.body.appendChild(b);
+      return b;
+    }
+
+    /* ── modal ── */
+    function makeOverlay() {
+      var ov = document.createElement('div');
+      Object.assign(ov.style, {
+        position: 'fixed', inset: '0', zIndex: '100000',
+        background: 'rgba(0,0,0,.55)', display: 'none',
+        alignItems: 'center', justifyContent: 'center',
+      });
+
+      ov.innerHTML = `
+        <div style="background:#fff;border-radius:12px;padding:32px;max-width:500px;width:90%;font-family:system-ui,sans-serif">
+          <h3 style="margin:0 0 6px;font-size:1.1rem;color:#111">Hromadný upload položek letáku</h3>
+          <p style="margin:0 0 20px;font-size:.83rem;color:#666;line-height:1.5">
+            Vyber nebo přetáhni všechny stránky najednou.<br>
+            <strong>Přepíše stávající seznam.</strong> Vyžaduje běžící <code>serve.py</code>.
+          </p>
+          <div id="bl-zone" style="border:2px dashed #d1d5db;border-radius:8px;padding:36px 16px;text-align:center;cursor:pointer;position:relative;transition:border-color .15s,background .15s">
+            <input id="bl-input" type="file" multiple accept="image/*"
+              style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+            <div id="bl-zone-text">
+              <strong style="font-size:.9rem">Přetáhni nebo klikni pro výběr</strong><br>
+              <small style="color:#9ca3af">JPG, PNG — libovolný počet najednou</small>
+            </div>
+          </div>
+          <div id="bl-status" style="font-size:.83rem;min-height:22px;margin:10px 0 14px;color:#555"></div>
+          <div style="display:flex;gap:10px">
+            <button id="bl-go" disabled
+              style="flex:1;background:#f97316;color:#fff;border:none;padding:11px;border-radius:7px;font-weight:700;font-size:.9rem;cursor:pointer;opacity:.4;transition:opacity .2s">
+              Nahrát a uložit
+            </button>
+            <button id="bl-cancel"
+              style="background:#f3f4f6;border:none;padding:11px 20px;border-radius:7px;cursor:pointer;font-size:.9rem">
+              Zrušit
+            </button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(ov);
+
+      var zone   = ov.querySelector('#bl-zone');
+      var input  = ov.querySelector('#bl-input');
+      var text   = ov.querySelector('#bl-zone-text');
+      var status = ov.querySelector('#bl-status');
+      var goBtn  = ov.querySelector('#bl-go');
+      var cancelBtn = ov.querySelector('#bl-cancel');
+      var selected = [];
+
+      function setFiles(files) {
+        selected = Array.from(files);
+        var names = selected.slice(0, 4).map(function (f) { return f.name; }).join(', ');
+        text.innerHTML = '<strong>' + selected.length + ' souborů</strong><br>'
+          + '<small style="color:#9ca3af">' + names + (selected.length > 4 ? '…' : '') + '</small>';
+        goBtn.disabled = false;
+        goBtn.style.opacity = '1';
+        status.textContent = '';
+      }
+
+      input.addEventListener('change', function () { setFiles(this.files); });
+
+      zone.addEventListener('dragover',  function (e) { e.preventDefault(); zone.style.borderColor = '#f97316'; zone.style.background = '#fff7ed'; });
+      zone.addEventListener('dragleave', function ()  { zone.style.borderColor = '#d1d5db'; zone.style.background = ''; });
+      zone.addEventListener('drop',      function (e) {
+        e.preventDefault();
+        zone.style.borderColor = '#d1d5db';
+        zone.style.background = '';
+        setFiles(e.dataTransfer.files);
+      });
+
+      goBtn.addEventListener('click', async function () {
+        if (!selected.length) return;
+        goBtn.disabled = true;
+
+        var isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+        try {
+          var paths;
+
+          if (isLocal) {
+            /* ── LOCAL: serve.py multipart ── */
+            status.innerHTML = '⏳ Nahrávám ' + selected.length + ' souborů…';
+            var fd = new FormData();
+            fd.append('mode', 'letak');
+            selected.forEach(function (f) { fd.append('files', f); });
+            var r = await fetch('/api/upload', { method: 'POST', body: fd });
+            var d = await r.json();
+            if (!d.ok) throw new Error(d.error || 'Chyba');
+            paths = d.files;
+
+          } else {
+            /* ── PRODUCTION: Netlify Functions, base64 JSON ── */
+            var total = selected.length;
+            var done  = 0;
+            status.innerHTML = '⏳ Nahrávám 0 / ' + total + ' souborů…';
+
+            function fileToB64(file) {
+              return new Promise(function (res, rej) {
+                var reader = new FileReader();
+                reader.onload  = function () { res(reader.result.split(',')[1]); };
+                reader.onerror = rej;
+                reader.readAsDataURL(file);
+              });
+            }
+
+            async function uploadOne(file) {
+              var data = await fileToB64(file);
+              var r = await fetch('/.netlify/functions/upload-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename: file.name, data: data }),
+              });
+              var d = await r.json();
+              if (!d.ok) throw new Error(file.name + ': ' + (d.error || 'upload selhal'));
+              done++;
+              status.innerHTML = '⏳ Nahrávám ' + done + ' / ' + total + ' souborů…';
+              return d.path;
+            }
+
+            paths = [];
+            /* Upload in batches of 4 to avoid GitHub API overload */
+            for (var i = 0; i < selected.length; i += 4) {
+              var batch = selected.slice(i, i + 4);
+              var batchPaths = await Promise.all(batch.map(uploadOne));
+              paths.push.apply(paths, batchPaths);
+            }
+
+            /* Update letak.json */
+            status.innerHTML = '⏳ Ukládám seznam položek…';
+            var r2 = await fetch('/.netlify/functions/update-letak', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ pages: paths }),
+            });
+            var d2 = await r2.json();
+            if (!d2.ok) throw new Error(d2.error || 'Chyba při ukládání letak.json');
+          }
+
+          var reloadDelay = isLocal ? 1000 : 3000;
+          var doneMsg = isLocal
+            ? '✓ Nahráno ' + paths.length + ' souborů — obnovuji CMS…'
+            : '✓ Nahráno ' + paths.length + ' souborů — Netlify nasadí za ~1–2 min.';
+          status.innerHTML = '<span style="color:green">' + doneMsg + '</span>';
+          setTimeout(function () { window.location.reload(); }, reloadDelay);
+
+        } catch (err) {
+          status.innerHTML = '<span style="color:#c00">⚠ ' + err.message + '</span>';
+          goBtn.disabled = false;
+        }
+      });
+
+      cancelBtn.addEventListener('click', closeModal);
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeModal(); });
+
+      ov._reset = function () {
+        selected = [];
+        input.value = '';
+        text.innerHTML = '<strong style="font-size:.9rem">Přetáhni nebo klikni pro výběr</strong><br>'
+          + '<small style="color:#9ca3af">JPG, PNG — libovolný počet najednou</small>';
+        zone.style.borderColor = '#d1d5db';
+        zone.style.background = '';
+        status.textContent = '';
+        goBtn.disabled = true;
+        goBtn.style.opacity = '.4';
+      };
+
+      return ov;
+    }
+
+    function openModal()  { overlay._reset(); overlay.style.display = 'flex'; }
+    function closeModal() { overlay.style.display = 'none'; }
+
+    /* ── clear button ── */
+    function makeClearBtn() {
+      var b = document.createElement('button');
+      b.textContent = '🗑 Smazat všechny položky';
+      b.title = 'Vymaže všechny stránky z letáku';
+      Object.assign(b.style, {
+        position: 'fixed', bottom: '24px', right: '260px', zIndex: '99999',
+        background: '#fff', color: '#b91c1c', border: '1.5px solid #fca5a5',
+        padding: '11px 18px', borderRadius: '8px',
+        fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+        boxShadow: '0 4px 16px rgba(0,0,0,.12)',
+        display: 'none',
+      });
+      b.addEventListener('click', openConfirm);
+      document.body.appendChild(b);
+      return b;
+    }
+
+    /* ── confirm dialog ── */
+    function makeConfirm() {
+      var ov = document.createElement('div');
+      Object.assign(ov.style, {
+        position: 'fixed', inset: '0', zIndex: '100001',
+        background: 'rgba(0,0,0,.55)', display: 'none',
+        alignItems: 'center', justifyContent: 'center',
+      });
+      ov.innerHTML = `
+        <div style="background:#fff;border-radius:12px;padding:32px;max-width:400px;width:90%;font-family:system-ui,sans-serif;text-align:center">
+          <div style="font-size:2rem;margin-bottom:12px">🗑</div>
+          <h3 style="margin:0 0 10px;font-size:1.05rem;color:#111">Smazat všechny položky letáku?</h3>
+          <p style="margin:0 0 24px;font-size:.85rem;color:#666;line-height:1.5">
+            Tato akce odstraní všechny položky ze seznamu v letáku.<br>
+            <strong>Akci nelze vrátit zpět.</strong>
+          </p>
+          <div style="display:flex;gap:10px;justify-content:center">
+            <button id="conf-yes"
+              style="background:#b91c1c;color:#fff;border:none;padding:11px 28px;border-radius:7px;font-weight:700;font-size:.9rem;cursor:pointer">
+              Ano, smazat vše
+            </button>
+            <button id="conf-no"
+              style="background:#f3f4f6;border:none;padding:11px 24px;border-radius:7px;cursor:pointer;font-size:.9rem">
+              Zrušit
+            </button>
+          </div>
+          <div id="conf-status" style="font-size:.83rem;margin-top:14px;min-height:18px"></div>
+        </div>`;
+      document.body.appendChild(ov);
+
+      var yesBtn = ov.querySelector('#conf-yes');
+      var noBtn  = ov.querySelector('#conf-no');
+      var status = ov.querySelector('#conf-status');
+
+      yesBtn.addEventListener('click', async function () {
+        yesBtn.disabled = true;
+        status.textContent = '⏳ Mažu…';
+        var isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        var clearUrl = isLocal ? '/api/clear-letak' : '/.netlify/functions/clear-letak';
+        try {
+          var r = await fetch(clearUrl, { method: 'POST' });
+          var d = await r.json();
+          if (d.ok) {
+            var msg = isLocal
+              ? '✓ Smazáno — obnovuji CMS…'
+              : '✓ Smazáno — Netlify nasadí za ~1–2 min.';
+            status.innerHTML = '<span style="color:green">' + msg + '</span>';
+            setTimeout(function () { window.location.reload(); }, isLocal ? 900 : 2500);
+          } else {
+            status.innerHTML = '<span style="color:#c00">⚠ ' + (d.error || 'Chyba') + '</span>';
+            yesBtn.disabled = false;
+          }
+        } catch (_) {
+          status.innerHTML = '<span style="color:#c00">⚠ Nepodařilo se připojit.</span>';
+          yesBtn.disabled = false;
+        }
+      });
+
+      noBtn.addEventListener('click', closeConfirm);
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeConfirm(); });
+      ov._reset = function () { status.textContent = ''; yesBtn.disabled = false; };
+      return ov;
+    }
+
+    var clearBtn, confirmOv;
+    function openConfirm()  { confirmOv._reset(); confirmOv.style.display = 'flex'; }
+    function closeConfirm() { confirmOv.style.display = 'none'; }
+
+    function update() {
+      var show = onLetakPage() ? 'block' : 'none';
+      if (btn)      btn.style.display      = show;
+      if (clearBtn) clearBtn.style.display = show;
+    }
+
+    window.addEventListener('load', function () {
+      btn       = makeBtn();
+      overlay   = makeOverlay();
+      clearBtn  = makeClearBtn();
+      confirmOv = makeConfirm();
+      update();
+      window.addEventListener('hashchange', update);
+    });
+  })();
+  </script>
+</body>
+</html>
