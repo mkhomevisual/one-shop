@@ -69,7 +69,7 @@ function applyLang() {
     if (v) el.placeholder = v;
   });
   // Active lang buttons
-  document.querySelectorAll('.lang-btn[data-for-lang]').forEach(btn => {
+  document.querySelectorAll('.lang-btn[data-for-lang],.mob-lang-btn[data-for-lang]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.forLang === lang);
   });
   document.querySelectorAll('.footer-lang-btn[data-for-lang]').forEach(btn => {
@@ -81,9 +81,12 @@ function applyLang() {
 // THEME
 // ──────────────────────────────────────────────
 function toggleTheme() {
+  const html = document.documentElement;
+  html.classList.add('theme-tr');
   theme = theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
+  html.setAttribute('data-theme', theme);
   localStorage.setItem('os-theme', theme);
+  setTimeout(() => html.classList.remove('theme-tr'), 280);
 }
 
 // ──────────────────────────────────────────────
@@ -504,10 +507,15 @@ async function initAll() {
   // Beams
   initBeams();
 
-  // Navbar scroll
+  // Navbar scroll + hero background parallax
   const navEl = document.getElementById('nav');
+  const heroEl = document.querySelector('.hero');
   window.addEventListener('scroll', () => {
-    navEl && navEl.classList.toggle('glow-nav', window.scrollY > 60);
+    const y = window.scrollY;
+    navEl && navEl.classList.toggle('glow-nav', y > 60);
+    if (heroEl && y < window.innerHeight) {
+      heroEl.style.backgroundPositionY = `calc(50% + ${y * 0.22}px)`;
+    }
   }, { passive: true });
 
   // Close custom branch dropdown when clicking outside
