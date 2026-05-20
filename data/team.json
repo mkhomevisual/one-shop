@@ -9,7 +9,7 @@
     },
     {
       "name": "Van Pham Hoang (Nam)",
-      "position_cz": "Obchod · doprava · nákup",
+      "position_cz": "Obchod",
       "position_vn": "Kinh doanh · vận chuyển · thu mua",
       "phone": "725 637 736",
       "email": "nam@voph.cz"
@@ -30,15 +30,15 @@
     },
     {
       "name": "Vít Sechovec",
-      "position_cz": "Vedoucí skladu",
-      "position_vn": "Trưởng kho",
+      "position_cz": "Vedoucí skladu · doprava · nákup",
+      "position_vn": "Trưởng kho · vận chuyển · thu mua",
       "phone": "770 324 840",
       "email": "sechovec@voph.cz"
     },
     {
       "name": "Marcel Rathuský",
-      "position_cz": "Správce dat",
-      "position_vn": "Người quản lý dữ liệu",
+      "position_cz": "Správce dat · EDI · E-SHOP",
+      "position_vn": "Quản lý dữ liệu · EDI · E-SHOP",
       "phone": "775 372 789",
       "email": "marcel@voph.cz"
     }
