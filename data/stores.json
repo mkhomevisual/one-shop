@@ -1,7 +1,7 @@
 {
   "root": [
     {
-      "owner_position_cz": "",
+      "owner_position_cz": "Majitel",
       "owner_position_vn": "",
       "photo_1": "/img/uploads/phtest2.png",
       "photo_2": "/img/uploads/phtest3.png",
@@ -13,11 +13,11 @@
       "city_subtitle": "Tábor · Světlogorská",
       "phone": "+420 775 372 789",
       "address": "Světlogorská 2767/8, 390 05 Tábor 5",
-      "owner_name": "",
-      "quote_cz": "",
+      "owner_name": "Hoang Pham Van",
+      "quote_cz": "Spolupráce s OneShop nám pomohla posunout prodejnu na úplně jinou úroveň. Oceňujeme hlavně rychlou komunikaci, pomoc s výběrem sortimentu a pravidelné doplňování zboží podle toho, co se opravdu prodává. Díky jejich zkušenostem jsme upravili vystavení prodejny a zákazníci začali nakupovat více i ve více kategoriích. Velké plus je také marketingová podpora a možnost řešit vše přes jednoho partnera.",
       "id": 1,
-      "owner_initials": "",
-      "quote_vn": ""
+      "owner_initials": "HPV",
+      "quote_vn": "Hợp tác với OneShop đã giúp cửa hàng của chúng tôi nâng lên một tầm cao hoàn toàn khác. Chúng tôi đánh giá cao nhất là sự hỗ trợ nhanh chóng, tư vấn chọn hàng hóa phù hợp và việc bổ sung hàng thường xuyên theo đúng nhu cầu bán thực tế. Nhờ kinh nghiệm của họ, chúng tôi đã tối ưu cách trưng bày cửa hàng và khách hàng bắt đầu mua nhiều hơn ở nhiều ngành hàng khác nhau. Điểm mạnh lớn nữa là hỗ trợ marketing và có thể giải quyết mọi thứ với một đối tác duy nhất."
     },
     {
       "owner_position_cz": "",
