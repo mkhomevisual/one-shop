@@ -23,8 +23,8 @@
     },
     {
       "name": "Kristýna Podlahová",
-      "position_cz": "Administrativa · grafika",
-      "position_vn": "Hành chính · thiết kế",
+      "position_cz": "Grafika",
+      "position_vn": "Thiết kế",
       "phone": "720 580 870",
       "email": "podlahova@voph.cz"
     },
@@ -41,6 +41,13 @@
       "position_vn": "Quản lý dữ liệu · EDI · E-SHOP",
       "phone": "775 372 789",
       "email": "marcel@voph.cz"
+    },
+    {
+      "name": "Michaela Homolková",
+      "position_cz": "Administrativa",
+      "position_vn": "Hành chính",
+      "phone": "770 386 716",
+      "email": "homolkova@voph.cz"
     }
   ]
 }
