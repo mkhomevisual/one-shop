@@ -48,6 +48,13 @@ export const handler = async (event) => {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ ok: false, error: 'Chybí filename nebo data' }) };
     }
 
+    // Reject files over 4 MB (base64 of 4 MB ≈ 5.5 MB string length)
+    const MAX_B64 = 5_500_000;
+    if (data.length > MAX_B64) {
+      const sizeMB = (data.length * 0.75 / 1_048_576).toFixed(1);
+      return { statusCode: 413, headers: CORS, body: JSON.stringify({ ok: false, error: `Soubor ${filename} je příliš velký (${sizeMB} MB). Maximální povolená velikost je 4 MB. Zkomprimuj obrázek na TinyPNG.com.` }) };
+    }
+
     const fname    = sanitize(filename);
     const filePath = `img/uploads/${fname}`;
 

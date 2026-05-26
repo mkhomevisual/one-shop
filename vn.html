@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Start cookieyes banner --><script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/717e7659421fa6ce6e124efe4ab53f6e/script.js"></script><!-- End cookieyes banner -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -528,6 +529,47 @@ html.theme-tr,html.theme-tr *,html.theme-tr *::before,html.theme-tr *::after{
 [data-theme="dark"] .theme-toggle .icon-moon{display:none}
 
 [data-theme="dark"] .cform{background:rgba(0,0,0,.9)}
+
+/* ── VOPH E-SHOP BLOCK ── */
+.voph-block{margin-top:48px;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,.08);background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.06);padding:40px 48px;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.voph-block-text .eyebrow{margin-bottom:8px}
+.voph-block-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin:0 0 8px}
+.voph-block-sub{font-size:.875rem;color:var(--muted);line-height:1.6;margin:0 0 24px}
+.voph-cta{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;font-size:.875rem;font-weight:700;padding:11px 24px;border-radius:var(--r-sm);border:none;cursor:pointer;text-decoration:none;transition:box-shadow .2s,transform .2s;letter-spacing:-.01em}
+.voph-cta:hover{box-shadow:var(--orange-glow);transform:translateY(-2px)}
+.voph-logo-img{height:150px;width:auto;display:block;border-radius:6px}
+@media(max-width:640px){.voph-block{grid-template-columns:1fr;gap:20px;padding:28px 24px}.voph-logo-img{display:none}}
+[data-theme="dark"] .voph-block{background:rgba(0,0,0,.6);border-color:rgba(255,255,255,.07);box-shadow:none}
+
+/* ── POLICY MODAL ── */
+.policy-ov{position:fixed;inset:0;z-index:100003;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.policy-ov.open{opacity:1;pointer-events:all}
+.policy-box{position:relative;background:#0D0D0D;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:40px;max-width:600px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.6);transform:scale(.96) translateY(12px);transition:transform .35s var(--ease)}
+.policy-ov.open .policy-box{transform:scale(1) translateY(0)}
+#policy-title{font-size:1.05rem;font-weight:800;color:var(--text);margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+#policy-body{font-size:.8125rem;color:var(--muted);line-height:1.8}
+#policy-body h4{font-size:.8125rem;font-weight:700;color:var(--text);margin:20px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+#policy-body p{margin:0 0 10px}
+#policy-body a{color:var(--orange)}
+[data-theme="light"] .policy-box{background:#fff;border-color:rgba(0,0,0,.1);box-shadow:0 24px 60px rgba(0,0,0,.12)}
+[data-theme="light"] #policy-title{border-bottom-color:rgba(0,0,0,.08)}
+
+/* ── FORM SUCCESS MODAL ── */
+.fs{position:fixed;inset:0;z-index:100002;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s}
+.fs.open{opacity:1;pointer-events:all}
+.fs-modal{position:relative;background:#0D0D0D;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:48px 40px 40px;max-width:420px;width:90%;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);transform:scale(.96) translateY(12px);transition:transform .35s var(--ease)}
+.fs.open .fs-modal{transform:scale(1) translateY(0)}
+.fs-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,color .2s}
+.fs-close:hover{background:rgba(249,115,22,.25);border-color:var(--orange);color:#fff}
+.fs-icon{width:56px;height:56px;border-radius:50%;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--orange);font-size:1.4rem}
+.fs-title{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin:0 0 10px}
+.fs-text{font-size:.875rem;color:var(--muted);line-height:1.65;margin:0 0 28px}
+.fs-btn{background:var(--orange);color:#fff;font-size:.875rem;font-weight:700;padding:11px 32px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:box-shadow .2s,transform .2s}
+.fs-btn:hover{box-shadow:var(--orange-glow);transform:translateY(-1px)}
+[data-theme="light"] .fs-modal{background:#fff;border-color:rgba(0,0,0,.1);box-shadow:0 24px 60px rgba(0,0,0,.15)}
+[data-theme="light"] .fs-close{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.14);color:rgba(0,0,0,.45)}
+[data-theme="light"] .fs-close:hover{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.4);color:var(--orange)}
+
 </style>
 </head>
 <body>
@@ -808,6 +850,25 @@ html.theme-tr,html.theme-tr *,html.theme-tr *::before,html.theme-tr *::after{
         <div class="cat-name" data-cz="Ochranné pomůcky" data-vn="Đồ bảo hộ">Ochranné pomůcky</div>
       </div>
     </div>
+
+    <!-- VOPH E-SHOP BLOCK -->
+    <div class="voph-block fade">
+      <div class="voph-block-text">
+        <span class="eyebrow" data-cz="E-SHOP" data-vn="Cửa hàng trực tuyến">Cửa hàng trực tuyến</span>
+        <h3 class="voph-block-title" data-cz="Kompletní nabídka online" data-vn="Toàn bộ danh mục trực tuyến">Toàn bộ danh mục trực tuyến</h3>
+        <p class="voph-block-sub"
+          data-cz="Prohlédněte si náš plný sortiment, objednejte pohodlně z kanceláře nebo z prodejny."
+          data-vn="Xem toàn bộ danh mục sản phẩm và đặt hàng dễ dàng từ văn phòng hoặc cửa hàng của bạn.">
+          Xem toàn bộ danh mục sản phẩm và đặt hàng dễ dàng từ văn phòng hoặc cửa hàng của bạn.
+        </p>
+        <a class="voph-cta" href="https://www.voph.cz" target="_blank" rel="noopener">
+          <span data-cz="Přejít do e-shopu" data-vn="Vào cửa hàng">Vào cửa hàng</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+      </div>
+      <img class="voph-logo-img" src="/assets/VOPH-LOGO.png" alt="VOPH.CZ e-shop"/>
+    </div>
+
   </div>
 </section>
 
@@ -957,7 +1018,7 @@ html.theme-tr,html.theme-tr *,html.theme-tr *::before,html.theme-tr *::after{
         <div class="footer-links">
           <a class="footer-link" href="#contact" onclick="return sc('#contact')" data-cz="Kontakt" data-vn="Liên hệ">Kontakt</a>
           <a class="footer-link" href="#novinky" onclick="return sc('#novinky')" data-cz="Novinky" data-vn="Tin tức">Novinky</a>
-          <a class="footer-link" href="https://voph.cz" target="_blank" rel="noopener">VOPH.CZ</a>
+          <a class="footer-link" href="https://www.voph.cz" target="_blank" rel="noopener" style="color:var(--orange);font-weight:700" data-cz="E-SHOP ↗" data-vn="E-SHOP ↗">E-SHOP ↗</a>
         </div>
       </div>
       <div>
@@ -969,10 +1030,10 @@ html.theme-tr,html.theme-tr *,html.theme-tr *::before,html.theme-tr *::after{
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 One-Shop · VOPH.CZ · Všechna práva vyhrazena</div>
+      <div class="footer-copy" data-cz="© 2026 One-Shop · Všechna práva vyhrazena" data-vn="© 2026 One-Shop · Bảo lưu mọi quyền">© 2026 One-Shop · Bảo lưu mọi quyền</div>
       <div style="display:flex;gap:16px">
-        <a class="footer-link" href="#" data-cz="GDPR" data-vn="Bảo mật">GDPR</a>
-        <a class="footer-link" href="#" data-cz="Podmínky" data-vn="Điều khoản">Podmínky</a>
+        <a class="footer-link" href="#" onclick="openPolicy('gdpr');return false" data-cz="GDPR" data-vn="Bảo mật">GDPR</a>
+        <a class="footer-link" href="#" onclick="openPolicy('terms');return false" data-cz="Podmínky" data-vn="Điều khoản">Podmínky</a>
       </div>
     </div>
   </div>
@@ -1089,6 +1150,33 @@ html.theme-tr,html.theme-tr *,html.theme-tr *::before,html.theme-tr *::after{
   <button class="lb-btn lb-prev" onclick="lbMove(-1)" aria-label="Předchozí foto">&#8592;</button>
   <button class="lb-btn lb-next" onclick="lbMove(1)" aria-label="Následující foto">&#8594;</button>
 </div>
+
+<!-- POLICY MODAL -->
+<div class="policy-ov" id="policy-ov" onclick="if(event.target===this)closePolicy()">
+  <div class="policy-box">
+    <button class="fs-close" onclick="closePolicy()" aria-label="Đóng">✕</button>
+    <div id="policy-title"></div>
+    <div id="policy-body"></div>
+  </div>
+</div>
+
+<!-- FORM SUCCESS MODAL -->
+<div class="fs" id="fs" onclick="if(event.target===this)closeFs()">
+  <div class="fs-modal">
+    <button class="fs-close" onclick="closeFs()" aria-label="Đóng">✕</button>
+    <div class="fs-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="fs-title" data-cz="Zpráva odeslána!" data-vn="Tin nhắn đã gửi!">Tin nhắn đã gửi!</h3>
+    <p class="fs-text"
+      data-cz="Díky za váš zájem — ozveme se vám do 24 hodin. Těšíme se na spolupráci."
+      data-vn="Cảm ơn bạn đã liên hệ — chúng tôi sẽ phản hồi trong vòng 24 giờ. Rất mong được hợp tác.">
+      Cảm ơn bạn đã liên hệ — chúng tôi sẽ phản hồi trong vòng 24 giờ. Rất mong được hợp tác.
+    </p>
+    <button class="fs-btn" onclick="closeFs()" data-cz="Zavřít" data-vn="Đóng">Đóng</button>
+  </div>
+</div>
+
 
 <script src="/js/render.js"></script>
 </body>

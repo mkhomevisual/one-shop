@@ -97,7 +97,19 @@ function sc(sel) {
   if (!el) return false;
   const nav = document.getElementById('nav');
   const off = nav ? nav.getBoundingClientRect().height : 0;
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
+  const target = el.getBoundingClientRect().top + window.scrollY - off;
+  const start  = window.scrollY;
+  const dist   = target - start;
+  const dur    = 750;
+  let t0 = null;
+  function eio(t) { return 1 - Math.pow(1 - t, 3); }
+  function step(ts) {
+    if (!t0) t0 = ts;
+    const p = Math.min((ts - t0) / dur, 1);
+    window.scrollTo(0, start + dist * eio(p));
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
   return false;
 }
 
@@ -106,6 +118,101 @@ function sc(sel) {
 // ──────────────────────────────────────────────
 function toggleMob() { document.getElementById('mob').classList.toggle('open'); }
 function closeMob()  { document.getElementById('mob').classList.remove('open'); }
+
+// ──────────────────────────────────────────────
+// FORM SUCCESS MODAL
+// ──────────────────────────────────────────────
+function openFs()  { document.getElementById('fs')?.classList.add('open'); }
+function closeFs() { document.getElementById('fs')?.classList.remove('open'); }
+
+// ──────────────────────────────────────────────
+// POLICY MODAL (GDPR + TERMS)
+// ──────────────────────────────────────────────
+const POLICY_CONTENT = {
+  gdpr: {
+    cz: {
+      title: 'Ochrana osobních údajů (GDPR)',
+      body: `
+        <h4>Správce osobních údajů</h4>
+        <p>Správcem osobních údajů je One-Shop (provozovatel webu one-shop.cz). Kontakt: <a href="mailto:info@one-shop.cz">info@one-shop.cz</a></p>
+        <h4>Jaké údaje zpracováváme</h4>
+        <p>Prostřednictvím kontaktního formuláře zpracováváme jméno, příjmení, e-mail, název prodejny a zprávu. Tyto údaje používáme výhradně pro zodpovězení vašeho dotazu a navázání obchodní spolupráce.</p>
+        <h4>Cookies a reklamní sledování</h4>
+        <p>Web může využívat analytické a reklamní nástroje třetích stran — Google Analytics, Google Ads a Meta (Facebook) Pixel. Tyto nástroje ukládají cookies a sledují chování návštěvníků za účelem měření dosahu a efektivity reklam. K jejich aktivaci je vyžadován váš souhlas.</p>
+        <h4>Právní základ zpracování</h4>
+        <p>Kontaktní formulář: oprávněný zájem (zodpovězení vašeho dotazu) dle čl. 6 odst. 1 písm. f) GDPR. Reklamní a analytické cookies: váš souhlas dle čl. 6 odst. 1 písm. a) GDPR.</p>
+        <h4>Doba uchovávání</h4>
+        <p>Kontaktní data uchováváme po dobu nezbytnou k vyřízení vaší žádosti, nejdéle 2 roky. Analytická data dle podmínek příslušných služeb (obvykle 13–26 měsíců).</p>
+        <h4>Vaše práva</h4>
+        <p>Máte právo na přístup k údajům, jejich opravu nebo výmaz, omezení zpracování, přenositelnost dat a podání námitky. Pro uplatnění práv nás kontaktujte na <a href="mailto:info@one-shop.cz">info@one-shop.cz</a>. Máte rovněž právo podat stížnost u Úřadu pro ochranu osobních údajů (<a href="https://www.uoou.cz" target="_blank">uoou.cz</a>).</p>
+        <h4>Platnost</h4>
+        <p>Dokument platí od května 2026. One-Shop si vyhrazuje právo jej kdykoli aktualizovat.</p>
+      `
+    },
+    vn: {
+      title: 'Bảo vệ dữ liệu cá nhân (GDPR)',
+      body: `
+        <h4>Người kiểm soát dữ liệu</h4>
+        <p>One-Shop (vận hành trang one-shop.cz). Liên hệ: <a href="mailto:info@one-shop.cz">info@one-shop.cz</a></p>
+        <h4>Dữ liệu chúng tôi thu thập</h4>
+        <p>Qua biểu mẫu liên hệ: họ tên, email, tên cửa hàng và nội dung tin nhắn. Chỉ dùng để trả lời yêu cầu và thiết lập hợp tác.</p>
+        <h4>Cookie và theo dõi quảng cáo</h4>
+        <p>Trang web có thể sử dụng Google Analytics, Google Ads và Meta Pixel. Các công cụ này lưu cookie và theo dõi hành vi người dùng để đo lường hiệu quả quảng cáo. Cần có sự đồng ý của bạn để kích hoạt.</p>
+        <h4>Cơ sở pháp lý</h4>
+        <p>Biểu mẫu liên hệ: lợi ích hợp pháp theo Điều 6(1)(f) GDPR. Cookie quảng cáo: sự đồng ý của bạn theo Điều 6(1)(a) GDPR.</p>
+        <h4>Thời gian lưu trữ</h4>
+        <p>Dữ liệu liên hệ tối đa 2 năm. Dữ liệu cookie theo điều khoản dịch vụ tương ứng (thường 13–26 tháng).</p>
+        <h4>Quyền của bạn</h4>
+        <p>Bạn có quyền truy cập, chỉnh sửa, xóa dữ liệu, giới hạn xử lý và phản đối. Liên hệ: <a href="mailto:info@one-shop.cz">info@one-shop.cz</a> hoặc khiếu nại lên <a href="https://www.uoou.cz" target="_blank">uoou.cz</a>. Có hiệu lực từ tháng 5 năm 2026.</p>
+      `
+    }
+  },
+  terms: {
+    cz: {
+      title: 'Podmínky použití',
+      body: `
+        <h4>Provozovatel</h4>
+        <p>Tento web provozuje One-Shop a slouží jako prezentace franšízy pro potenciální partnery v ČR.</p>
+        <h4>Obsah a duševní vlastnictví</h4>
+        <p>Veškerý obsah (texty, obrázky, loga, grafika) je chráněn autorským zákonem a je majetkem One-Shop, pokud není uvedeno jinak. Kopírování nebo šíření bez písemného souhlasu je zakázáno.</p>
+        <h4>Přesnost informací</h4>
+        <p>Informace jsou průběžně aktualizovány. One-Shop nenese odpovědnost za případné nepřesnosti ani za škody vzniklé použitím informací z tohoto webu.</p>
+        <h4>Externe odkazy</h4>
+        <p>Web odkazuje na e-shop VOPH.CZ, který je samostatným obchodním portálem. One-Shop nenese odpovědnost za obsah externích webů třetích stran.</p>
+        <h4>Platné právo</h4>
+        <p>Tyto podmínky se řídí právním řádem České republiky. Případné spory budou řešeny před příslušnými českými soudy.</p>
+        <h4>Změny podmínek</h4>
+        <p>One-Shop si vyhrazuje právo podmínky kdykoli změnit. Aktuální verze je vždy dostupná na tomto webu. Poslední aktualizace: květen 2026.</p>
+      `
+    },
+    vn: {
+      title: 'Điều khoản sử dụng',
+      body: `
+        <h4>Chủ sở hữu</h4>
+        <p>Trang web do One-Shop vận hành, phục vụ giới thiệu nhượng quyền cho các đối tác tiềm năng tại Séc.</p>
+        <h4>Nội dung và sở hữu trí tuệ</h4>
+        <p>Toàn bộ nội dung được bảo vệ bởi luật bản quyền và thuộc sở hữu của One-Shop. Sao chép hoặc phân phối mà không có sự đồng ý bằng văn bản là bị cấm.</p>
+        <h4>Độ chính xác thông tin</h4>
+        <p>Thông tin được cập nhật định kỳ. One-Shop không chịu trách nhiệm về sai sót hoặc thiệt hại từ việc sử dụng thông tin trên trang web.</p>
+        <h4>Liên kết bên ngoài</h4>
+        <p>Trang liên kết đến VOPH.CZ, cổng thương mại độc lập. One-Shop không chịu trách nhiệm về nội dung của các trang ngoài.</p>
+        <h4>Luật áp dụng</h4>
+        <p>Điều khoản được điều chỉnh bởi pháp luật Cộng hòa Séc. Tranh chấp giải quyết tại tòa án Séc có thẩm quyền. Cập nhật: tháng 5 năm 2026.</p>
+      `
+    }
+  }
+};
+
+function openPolicy(type) {
+  const lang = document.documentElement.getAttribute('data-lang') || 'cz';
+  const data = POLICY_CONTENT[type]?.[lang] || POLICY_CONTENT[type]?.['cz'];
+  if (!data) return;
+  document.getElementById('policy-title').textContent = data.title;
+  document.getElementById('policy-body').innerHTML = data.body;
+  document.getElementById('policy-ov').classList.add('open');
+}
+function closePolicy() { document.getElementById('policy-ov')?.classList.remove('open'); }
+
 
 // ──────────────────────────────────────────────
 // LIGHTBOX
@@ -220,16 +327,10 @@ function renderBranch(idx) {
     : `<div style="color:var(--muted);font-size:.8rem;padding:8px 0">${L === 'vn' ? 'Chưa có ảnh.' : 'Žádné fotky zatím nejsou nahrané.'}</div>`;
 
   const mapSrc = 'https://maps.google.com/maps?q=' + encodeURIComponent(b.address || b.name || '') + '&output=embed&z=15';
-  const mapHint = L === 'vn' ? 'Nhấn để xem bản đồ' : 'Klikněte pro zobrazení mapy';
 
   el.innerHTML = `
-    <div class="branch-map branch-map-ph" data-src="${esc(mapSrc)}" onclick="loadBranchMap(this)">
-      <div class="map-grid"></div>
-      <div class="map-pin">
-        <div class="map-pin-dot"></div>
-        <span style="font-size:.75rem;color:rgba(249,115,22,.8);font-weight:600">${esc(b.name)}</span>
-      </div>
-      <div class="map-load-hint">${mapHint}</div>
+    <div class="branch-map">
+      <iframe src="${esc(mapSrc)}" width="100%" height="100%" style="border:0;display:block;width:100%;height:100%" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
     <div class="branch-meta-row">
       <div class="branch-info-row">
@@ -286,14 +387,6 @@ function selectBranchMob(idx) {
   if (label && stores[idx]) label.textContent = stores[idx].name + ' — ' + stores[idx].city_subtitle;
   document.querySelectorAll('.branch-select-option').forEach((o, i) => o.classList.toggle('active', i === idx));
   closeBranchSelect();
-}
-
-function loadBranchMap(el) {
-  const src = el.dataset.src;
-  if (!src) return;
-  el.classList.remove('branch-map-ph');
-  el.removeAttribute('onclick');
-  el.innerHTML = `<iframe src="${src}" width="100%" height="100%" style="border:0;display:block;width:100%;height:100%" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`;
 }
 
 function selectBranch(idx) {
@@ -477,7 +570,23 @@ async function initAll() {
     const p4 = [s.photo_1, s.photo_2, s.photo_3, s.photo_4].filter(Boolean);
     return { ...s, photos: p4.length ? p4 : (Array.isArray(s.photos) ? s.photos : []) };
   });
-  if (stores.length) { renderSidebar(); renderBranch(0); }
+  if (stores.length) {
+    renderSidebar();
+    // Defer first map iframe until section scrolls into view
+    const pobEl = document.getElementById('pobocky');
+    if (pobEl) {
+      const mo = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          const active = document.querySelector('.branch-tab.active');
+          renderBranch(active ? +active.dataset.idx : 0);
+          mo.disconnect();
+        }
+      }, { threshold: 0.1 });
+      mo.observe(pobEl);
+    } else {
+      renderBranch(0);
+    }
+  }
 
   // Team
   const team = normalizeRoot(teamData);
@@ -524,16 +633,42 @@ async function initAll() {
     if (wrap && !wrap.contains(e.target)) closeBranchSelect();
   });
 
-  // Keyboard shortcuts for lightbox / letak
+  // Keyboard shortcuts for lightbox / letak / form success
   document.addEventListener('keydown', e => {
-    const lpOpen = document.getElementById('lp')?.classList.contains('open');
-    const lbOpen = document.getElementById('lb')?.classList.contains('open');
-    if (lpOpen) { if (e.key === 'Escape') closeLetak(); return; }
+    const lpOpen  = document.getElementById('lp')?.classList.contains('open');
+    const lbOpen  = document.getElementById('lb')?.classList.contains('open');
+    const fsOpen  = document.getElementById('fs')?.classList.contains('open');
+    const polOpen = document.getElementById('policy-ov')?.classList.contains('open');
+    if (lpOpen)  { if (e.key === 'Escape') closeLetak();   return; }
+    if (fsOpen)  { if (e.key === 'Escape') closeFs();      return; }
+    if (polOpen) { if (e.key === 'Escape') closePolicy();  return; }
     if (!lbOpen) return;
     if (e.key === 'ArrowLeft')  lbMove(-1);
     else if (e.key === 'ArrowRight') lbMove(1);
     else if (e.key === 'Escape') closeLb();
   });
+
+  // AJAX form submit — keeps user on page, shows success modal
+  const cform = document.getElementById('cform');
+  if (cform) {
+    cform.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = cform.querySelector('.fsubmit');
+      if (btn) btn.disabled = true;
+      try {
+        const body = new URLSearchParams(new FormData(cform));
+        const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+        if (r.ok || r.status === 303) { cform.reset(); openFs(); }
+        else throw new Error();
+      } catch(_) {
+        // fallback to native submit if fetch fails
+        cform.submit();
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+
 }
 
 // Run when DOM ready

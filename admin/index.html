@@ -82,8 +82,21 @@
       var cancelBtn = ov.querySelector('#bl-cancel');
       var selected = [];
 
+      var MAX_FILE_MB = 4;
+      var MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+
       function setFiles(files) {
-        selected = Array.from(files);
+        var all = Array.from(files);
+        var tooBig = all.filter(function(f) { return f.size > MAX_FILE_BYTES; });
+        if (tooBig.length) {
+          var list = tooBig.map(function(f) { return f.name + ' (' + (f.size/1048576).toFixed(1) + ' MB)'; }).join(', ');
+          status.innerHTML = '<span style="color:#c00">⚠ Příliš velké soubory (max ' + MAX_FILE_MB + ' MB): ' + list + '<br>Zkomprimuj na <a href="https://tinypng.com" target="_blank" style="color:#f97316">TinyPNG.com</a> a zkus znovu.</span>';
+          goBtn.disabled = true;
+          goBtn.style.opacity = '.4';
+          selected = [];
+          return;
+        }
+        selected = all;
         var names = selected.slice(0, 4).map(function (f) { return f.name; }).join(', ');
         text.innerHTML = '<strong>' + selected.length + ' souborů</strong><br>'
           + '<small style="color:#9ca3af">' + names + (selected.length > 4 ? '…' : '') + '</small>';
