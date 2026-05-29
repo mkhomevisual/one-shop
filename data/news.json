@@ -1,14 +1,3 @@
 {
-  "root": [
-    {
-      "category_cz": "Novinky",
-      "category_vn": "Tin tức",
-      "title_cz": "Novinka, Test, Nobuild",
-      "title_vn": "Novinky, Test, Nobuild, VN",
-      "date": "2026-05-29",
-      "excerpt_cz": "Lorem ipsum dolor sit amet",
-      "excerpt_vn": "Lorem ipsum dolor sit amet vn",
-      "image": "/img/uploads/letak-placeholder_2.jpg"
-    }
-  ]
+  "root": []
 }
