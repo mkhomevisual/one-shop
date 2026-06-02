@@ -41,7 +41,7 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
+      "photo_1": "/img/uploads/whatsapp-image-2026-02-17-at-10.40.26.jpeg",
       "photo_2": "",
       "photo_3": "",
       "photo_4": "",
@@ -60,7 +60,7 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
+      "photo_1": "/img/uploads/image.jpg",
       "photo_2": "",
       "photo_3": "",
       "photo_4": "",
@@ -79,7 +79,7 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
+      "photo_1": "/img/uploads/image.jpg",
       "photo_2": "",
       "photo_3": "",
       "photo_4": "",
@@ -98,7 +98,7 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
+      "photo_1": "/img/uploads/whatsapp_image_2026-02-03_at_20.10.03.jpeg",
       "photo_2": "",
       "photo_3": "",
       "photo_4": "",
@@ -117,7 +117,7 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
+      "photo_1": "/img/uploads/whatsapp_image_2026-02-09_at_10.07.18.jpg",
       "photo_2": "",
       "photo_3": "",
       "photo_4": "",
@@ -136,10 +136,10 @@
     {
       "owner_position_cz": "",
       "owner_position_vn": "",
-      "photo_1": "",
-      "photo_2": "",
-      "photo_3": "",
-      "photo_4": "",
+      "photo_1": "/img/uploads/whatsapp-image-2026-02-18-at-16.13.32.jpeg",
+      "photo_2": "/img/uploads/whatsapp-image-2026-02-18-at-16.13.42-1-.jpeg",
+      "photo_3": "/img/uploads/whatsapp-image-2026-02-18-at-16.13.32-1-.jpeg",
+      "photo_4": "/img/uploads/whatsapp-image-2026-02-18-at-16.13.32-2-.jpeg",
       "hours_cz": "Po–Pá 8:00–18:00, So–Ne 9:00–17:00",
       "hours_vn": "Thứ 2–6 8:00–18:00, Thứ 7–CN 9:00–17:00",
       "name": "ONESHOP Partner Kraslice",
@@ -210,13 +210,17 @@
       "quote_vn": ""
     },
     {
-      "id": 12,
+      "photo_1": "/img/uploads/whatsapp-image-2026-04-02-at-21.51.12-5-.jpeg",
+      "photo_2": "/img/uploads/whatsapp-image-2026-04-02-at-21.51.14-1-.jpeg",
+      "photo_3": "/img/uploads/whatsapp-image-2026-04-02-at-21.51.16-4-.jpeg",
+      "photo_4": "/img/uploads/whatsapp-image-2026-04-02-at-21.51.17.jpeg",
+      "hours_cz": "Po–Ne 8:00–17:00",
+      "hours_vn": "Thứ 2–CN 8:00–17:00",
       "name": "ONESHOP Partner Poběžovice",
       "city_subtitle": "Poběžovice · Vranovská ",
-      "address": "Vranovská 117, 345 22 Poběžovice",
       "phone": "+420 722 279 999",
-      "hours_cz": "Po–Ne 8:00–17:00",
-      "hours_vn": "Thứ 2–CN 8:00–17:00"
+      "address": "Vranovská 117, 345 22 Poběžovice",
+      "id": 12
     },
     {
       "id": 13,
