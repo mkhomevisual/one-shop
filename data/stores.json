@@ -7,8 +7,8 @@
       "photo_2": "/img/uploads/phtest3.png",
       "photo_3": "/img/uploads/phtest4.png",
       "photo_4": "/img/uploads/phtest1.png",
-      "hours_cz": "Po–Ne 8:00–19:00",
-      "hours_vn": "Thứ 2–CN 8:00–19:00",
+      "hours_cz": "Po–Ne 9:00–17:00",
+      "hours_vn": "Thứ 2–CN 9:00–17:00",
       "name": "ONESHOP Tábor",
       "city_subtitle": "Tábor · Světlogorská",
       "phone": "+420 775 372 789",
@@ -208,6 +208,66 @@
       "id": 11,
       "owner_initials": "",
       "quote_vn": ""
+    },
+    {
+      "id": 12,
+      "name": "ONESHOP Partner Poběžovice",
+      "city_subtitle": "Poběžovice · Vranovská ",
+      "address": "Vranovská 117, 345 22 Poběžovice",
+      "phone": "+420 722 279 999",
+      "hours_cz": "Po–Ne 8:00–17:00",
+      "hours_vn": "Thứ 2–CN 8:00–17:00"
+    },
+    {
+      "id": 13,
+      "name": "ONESHOP Partner Bělčice",
+      "city_subtitle": "Bělčice · nám. J. Kučery",
+      "address": "nám. J. Kučery 66, 387 43 Bělčice",
+      "hours_cz": "Po–Ne 7:00–19:00",
+      "hours_vn": "Thứ 2–CN 7:00–19:00"
+    },
+    {
+      "id": 14,
+      "name": "ONESHOP Partner Březnice",
+      "city_subtitle": "Březnice · Náměstí",
+      "address": "Náměstí 12, 262 72 Březnice",
+      "phone": "",
+      "hours_vn": "Thứ 2–6 7:30–18:00, Thứ 7–CN 7:30–16:00",
+      "hours_cz": "Po–Pá 7:30–18:00, So–Ne 7:30–16:00"
+    },
+    {
+      "id": 15,
+      "name": "ONESHOP Partner Studená",
+      "city_subtitle": "Studená · nám. Sv. J. Nepomuckého",
+      "address": "nám. Sv. J. Nepomuckého 138, 378 56 Studená",
+      "phone": "+420 721 750 860",
+      "hours_cz": "Po–Ne 7:00–20:00",
+      "hours_vn": "Thứ 2–CN 7:00–20:00"
+    },
+    {
+      "id": 16,
+      "name": "ONESHOP Partner Rumburk",
+      "address": "SNP 131, 408 01 Rumburk",
+      "city_subtitle": "Rumburk · SNP",
+      "hours_cz": "Po–Ne 7:00–21:00",
+      "hours_vn": "Thứ 2–CN 7:00–21:00"
+    },
+    {
+      "id": 17,
+      "name": "ONESHOP Partner Litoměřice",
+      "city_subtitle": "Litoměřice · Želetická ",
+      "address": "Želetická 1990, 412 01 Litoměřice 1",
+      "phone": "+420 777 151 888",
+      "hours_cz": "Po–Ne 8:00–18:00",
+      "hours_vn": "Thứ 2–CN 8:00–18:00"
+    },
+    {
+      "id": 18,
+      "name": "ONESHOP Partner Osek u Duchcova",
+      "address": "K. H. Borovského 308, 417 05 Osek u Duchcova",
+      "city_subtitle": "Osek u Duchcova · K. H. Borovského",
+      "hours_cz": "Po–Ne 7:00–20:00",
+      "hours_vn": "Thứ 2–CN 7:00–20:00"
     }
   ]
 }
