@@ -315,8 +315,29 @@ function renderBranch(idx) {
   if (!el || !stores[idx]) return;
   const b = stores[idx];
   const L = lang;
+  // CMS fields are optional. Normalize them at the display boundary so one
+  // incomplete store record cannot prevent the whole detail from rendering.
+  const phone = typeof b.phone === 'string' ? b.phone.trim() : '';
+  const testimonial = typeof (L === 'vn' ? b.quote_vn : b.quote_cz) === 'string'
+    ? (L === 'vn' ? b.quote_vn : b.quote_cz).trim()
+    : '';
   const mapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(b.address || '');
   const photos  = Array.isArray(b.photos) ? b.photos : [];
+  const phoneHtml = phone
+    ? `<a href="tel:${esc(phone.replace(/[^+0-9]/g,''))}" style="color:var(--orange)">${esc(phone)}</a>`
+    : '<span style="color:var(--muted)">—</span>';
+  const testimonialHtml = testimonial
+    ? `<div class="testimonial">
+         <div class="test-quote">${esc(testimonial)}</div>
+         <div class="test-author">
+           <div class="test-avatar">${esc(b.owner_initials)}</div>
+           <div>
+             <div class="test-name">${esc(b.owner_name)}</div>
+             <div class="test-role">${esc(L === 'vn' ? b.owner_position_vn : b.owner_position_cz)}</div>
+           </div>
+         </div>
+       </div>`
+    : '';
 
   const photosHtml = photos.length
     ? photos.map((p, pi) =>
@@ -340,7 +361,7 @@ function renderBranch(idx) {
         </div>
         <div class="branch-info-item">
           <div class="branch-info-label">${L === 'vn' ? 'Điện thoại' : 'Telefon'}</div>
-          <div class="branch-info-val"><a href="tel:${esc(b.phone.replace(/[^+0-9]/g,''))}" style="color:var(--orange)">${esc(b.phone)}</a></div>
+          <div class="branch-info-val">${phoneHtml}</div>
         </div>
         <div class="branch-info-item">
           <div class="branch-info-label">${L === 'vn' ? 'Giờ mở cửa' : 'Otevírací doba'}</div>
@@ -352,16 +373,7 @@ function renderBranch(idx) {
         ${L === 'vn' ? 'Điều hướng' : 'Navigovat'}
       </a>
     </div>
-    <div class="testimonial">
-      <div class="test-quote">${esc(L === 'vn' ? b.quote_vn : b.quote_cz)}</div>
-      <div class="test-author">
-        <div class="test-avatar">${esc(b.owner_initials)}</div>
-        <div>
-          <div class="test-name">${esc(b.owner_name)}</div>
-          <div class="test-role">${esc(L === 'vn' ? b.owner_position_vn : b.owner_position_cz)}</div>
-        </div>
-      </div>
-    </div>
+    ${testimonialHtml}
     <div class="branch-gallery">
       <div class="gallery-label">${L === 'vn' ? 'Thư viện ảnh' : 'Fotogalerie'}</div>
       <div class="gallery-grid">${photosHtml}</div>
