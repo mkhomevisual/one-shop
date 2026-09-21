@@ -136,7 +136,7 @@ const POLICY_CONTENT = {
         <h4>Správce osobních údajů</h4>
         <p>Správcem osobních údajů je One-Shop (provozovatel webu one-shop.cz). Kontakt: <a href="mailto:info@one-shop.cz">info@one-shop.cz</a></p>
         <h4>Jaké údaje zpracováváme</h4>
-        <p>Prostřednictvím kontaktního formuláře zpracováváme jméno, příjmení, e-mail, název prodejny a zprávu. Tyto údaje používáme výhradně pro zodpovězení vašeho dotazu a navázání obchodní spolupráce.</p>
+        <p>Prostřednictvím kontaktního formuláře zpracováváme jméno, příjmení, e-mail, telefon, název prodejny a zprávu. Tyto údaje používáme výhradně pro zodpovězení vašeho dotazu a navázání obchodní spolupráce.</p>
         <h4>Cookies a reklamní sledování</h4>
         <p>Web může využívat analytické a reklamní nástroje třetích stran — Google Analytics, Google Ads a Meta (Facebook) Pixel. Tyto nástroje ukládají cookies a sledují chování návštěvníků za účelem měření dosahu a efektivity reklam. K jejich aktivaci je vyžadován váš souhlas.</p>
         <h4>Právní základ zpracování</h4>
@@ -155,7 +155,7 @@ const POLICY_CONTENT = {
         <h4>Người kiểm soát dữ liệu</h4>
         <p>One-Shop (vận hành trang one-shop.cz). Liên hệ: <a href="mailto:info@one-shop.cz">info@one-shop.cz</a></p>
         <h4>Dữ liệu chúng tôi thu thập</h4>
-        <p>Qua biểu mẫu liên hệ: họ tên, email, tên cửa hàng và nội dung tin nhắn. Chỉ dùng để trả lời yêu cầu và thiết lập hợp tác.</p>
+        <p>Qua biểu mẫu liên hệ: họ tên, email, số điện thoại, tên cửa hàng và nội dung tin nhắn. Chỉ dùng để trả lời yêu cầu và thiết lập hợp tác.</p>
         <h4>Cookie và theo dõi quảng cáo</h4>
         <p>Trang web có thể sử dụng Google Analytics, Google Ads và Meta Pixel. Các công cụ này lưu cookie và theo dõi hành vi người dùng để đo lường hiệu quả quảng cáo. Cần có sự đồng ý của bạn để kích hoạt.</p>
         <h4>Cơ sở pháp lý</h4>
